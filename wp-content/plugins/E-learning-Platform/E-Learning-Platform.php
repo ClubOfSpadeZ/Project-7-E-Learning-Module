@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: My Custom Plugin
+ * Plugin Name: E-Learing Platform
  * Plugin URI:  https://example.com/my-custom-plugin
  * Description: A starter template for building WordPress plugins.
  * Version:     1.0.0
- * Author:      Your Name
- * Author URI:  https://example.com
+ * Author:      Group 7 UC Capstone Project
+ * Author URI:  https://github.com/ClubOfSpadeZ/Project-7-E-Learning-Module
  * License:     GPL2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: my-custom-plugin
+ * Text Domain: E-Learing-Platform
  * Domain Path: /languages
  */
 
