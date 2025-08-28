@@ -3,27 +3,17 @@ on:
   push:
     branches: [ main, relsese ]
 jobs:
-  build:
+  Fast-FTP-Action:
+    name: Fast FTP Action
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      # Here is the deployment action
-      - name: Upload from public_html via FTP
-        uses: airvzxf/ftp-deployment-action@latest
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          user: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: "./wp-content"
-          remote_dir: "/staging/wp-content"
-          delete: "false"
-          max_retries: "7"
-          no_symlinks: "false"
-          ftp_ssl_allow: "false"
-          ftp_use_feat: "true"
-          ftp_nop_interval: "9"
-          net_max_retries: "0"
-          net_persist_retries: "11"
-          net_timeout: "13s"
-          dns_max_retries: "17"
-          dns_fatal_timeout: "never"
+    - uses: actions/checkout@v2
+
+    - name: Fast FTP Action
+      uses: anvil-solutions/Fast-FTP-Action@2.1.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        port: 21
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
