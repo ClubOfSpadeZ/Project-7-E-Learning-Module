@@ -1,7 +1,9 @@
 name: 🚀 Deploy
 on:
   push:
-    branches: [ main ]
+    branches:
+    - main
+    - release/*
 
 jobs:
   build:
