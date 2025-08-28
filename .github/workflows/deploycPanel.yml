@@ -1,19 +1,21 @@
-name: CI -> Deploy to My website
+name: 🚀 Deploy
 on:
   push:
-    branches: [ main, relsese ]
+    branches: [ master ]
+
 jobs:
-  Fast-FTP-Action:
-    name: Fast FTP Action
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Fast FTP Action
-      uses: anvil-solutions/Fast-FTP-Action@2.1.0
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        port: 21
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+      - uses: actions/checkout@v2
+      # Here is the deployment action
+      - name: Upload from output to a remote server via FTP
+        uses: modern-dev/ftp-mirror@v2
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_dir: "./wp-content/"
+          remote_dir: "./staging/wp-content/"
+          delete: "false"
+   #       exlude: "data/ cache/"
