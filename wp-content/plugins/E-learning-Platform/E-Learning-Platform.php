@@ -3,7 +3,7 @@
  * Plugin Name: E-Learing Platform
  * Plugin URI:  https://example.com/my-custom-plugin
  * Description: A starter template for building WordPress plugins.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      Group 7 UC Capstone Project
  * Author URI:  https://github.com/ClubOfSpadeZ/Project-7-E-Learning-Module
  * License:     GPL2
