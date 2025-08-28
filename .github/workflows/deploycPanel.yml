@@ -19,7 +19,6 @@ jobs:
           delete: "false"
           max_retries: "7"
           no_symlinks: "false"
-          mirror_verbose: 3
           ftp_ssl_allow: "no"
           ftp_use_feat: "true"
           ftp_nop_interval: "9"
