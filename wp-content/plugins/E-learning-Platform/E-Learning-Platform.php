@@ -24,37 +24,55 @@ define( 'MYPLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 // Include main class file (optional if you want OOP structure)
 // require_once MYPLUGIN_PATH . 'includes/class-myplugin.php';
+require_once MYPLUGIN_PATH . 'admin-quiz-table.php';
+require_once MYPLUGIN_PATH . 'admin-quiz-create.php';
 
 // Plugin activation hook
-function myplugin_activate() {
+function elearn_activate() {
     // Code that runs on activation (e.g., create tables, set defaults)
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'quiz';
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        title varchar(255) NOT NULL,
+        description text NOT NULL,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+
     flush_rewrite_rules();
 }
-register_activation_hook( __FILE__, 'myplugin_activate' );
+register_activation_hook( __FILE__, 'elearn_activate' );
 
 // Plugin deactivation hook
-function myplugin_deactivate() {
+function elearn_deactivate() {
     // Code that runs on deactivation (e.g., cleanup tasks)
     flush_rewrite_rules();
 }
-register_deactivation_hook( __FILE__, 'myplugin_deactivate' );
+register_deactivation_hook( __FILE__, 'elearn_deactivate' );
 
 // Initialize plugin
-function myplugin_init() {
+function elearn_init() {
     // Load text domain for translations
     load_plugin_textdomain( 'my-custom-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
     // Example: add a shortcode
-    add_shortcode( 'myplugin_hello', function() {
+    add_shortcode( 'elearn_hello', function() {
         return '<p>Hello from My Custom Plugin!</p>';
     } );
 }
-add_action( 'plugins_loaded', 'myplugin_init' );
+add_action( 'plugins_loaded', 'elearn_init' );
 
 // Example: Add settings link on plugin page
-function myplugin_settings_link( $links ) {
-    $settings_link = '<a href="options-general.php?page=myplugin-settings">' . __( 'Settings', 'my-custom-plugin' ) . '</a>';
+function elearn_settings_link( $links ) {
+    $settings_link = '<a href="options-general.php?page=elearn-settings">' . __( 'Settings', 'my-custom-plugin' ) . '</a>';
     array_unshift( $links, $settings_link );
     return $links;
 }
-add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'myplugin_settings_link' );
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'elearn_settings_link' );
