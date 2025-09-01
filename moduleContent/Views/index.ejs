@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Module 1 test</title>
+        <link rel="stylesheet" href="./style.css" type="text/css"/>
+    </head>
+    <body>
+        <div id="requiredReading">
+            <h1>Module test 1</h1>
+            <iframe id="pdfViewer" src="./learningContent/1_percent_weight_loss_22-12-21.pdf" width="600" height="800" ></iframe>
+        </div>
+
+        <form id="quizForm">
+            <!-- loop through 'questions' from data.js and display each one-->
+            <div class="questionBlock">
+                <% questions.forEach((q , ind) => { %>
+                    <p id="questionText"><%= ind + 1 %>: <%= q.question %></p>
+                    <!--loop and display ans for each Q-->
+                    <% q.option.forEach((opt, i) => { %>
+                        <div id="answersText" >
+                            <input name="question<%= ind %>" type="radio" value="<%= i %>">
+                            <%= opt %>
+                        </div>
+                        <br/>
+                    <% }) %>
+                    <br/>
+                    <br/>
+                <% }) %>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2 id="result">You need 100% to pass</h2>
+
+        <!--extracts correct ans for each Q-->
+        <script>    
+            const correctAns = <%-JSON.stringify(questions.map(q=>q.answer)) %>
+        </script>
+        <script src="./js/script.js"></script>
+
+    </body>
+</html>

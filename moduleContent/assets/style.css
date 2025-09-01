@@ -1,0 +1,34 @@
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#requiredReading {
+    margin: auto;
+    text-align: center;
+}
+
+#pdfViewer {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#quizForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+#questionText {
+    white-space: pre-line;
+    font-size: larger;
+}
+
+.questionBlock{
+    width: 50%;
+}
