@@ -81,6 +81,16 @@ function elearn_database_generator() {
         PRIMARY KEY (module_module_id, licence_licence_id)
     ) $charset_collate;";
 
+    $tables[] = "CREATE TABLE {$prefix}access (
+        access_id INT AUTO_INCREMENT PRIMARY KEY,
+        access_code VARCHAR(100) NOT NULL UNIQUE,
+        organisation_id INT NOT NULL,
+        is_used TINYINT(1) DEFAULT 0,
+        access_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        access_used TIMESTAMP DEFAULT NULL,
+        PRIMARY KEY (module_module_id, licence_licence_id)
+    ) $charset_collate;";
+
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     foreach ($tables as $sql) {
         dbDelta($sql);

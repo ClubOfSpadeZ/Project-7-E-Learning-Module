@@ -35,11 +35,13 @@ function elearn_module_table_page()
                 </thead>
                 <tbody>';
         foreach ($results as $row) {
+            $edit_url = admin_url('admin.php?page=elearn-edit-module&module_id=' . intval($row->module_id));
             echo '<tr>
                     <td>' . esc_html($row->module_id) . '</td>
                     <td>' . esc_html($row->module_name) . '</td>
                     <td>' . esc_html($row->module_description) . '</td>
                     <td>' . esc_html($row->module_crated) . '</td>
+                    <td><a href="' . esc_url($edit_url) . '" class="button">Edit</a></td>
                   </tr>';
         }
         echo '</tbody></table>';
