@@ -18,33 +18,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'MYPLUGIN_VERSION', '1.0.0' );
-define( 'MYPLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'MYPLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'ELEARN_VERSION', '1.0.0' );
+define( 'ELEARN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'ELEARN_URL', plugin_dir_url( __FILE__ ) );
 
 // Include main class file (optional if you want OOP structure)
 // require_once MYPLUGIN_PATH . 'includes/class-myplugin.php';
-require_once MYPLUGIN_PATH . 'admin-quiz-table.php';
-require_once MYPLUGIN_PATH . 'admin-quiz-create.php';
+require_once ELEARN_PATH . 'pages/admin/admin-module-table.php';
+require_once ELEARN_PATH . 'pages/admin/admin-module-create.php';
+
+// Create custom user roles for elerning platform
+require_once ELEARN_PATH . 'roles.php';
+require_once ELEARN_PATH . 'database-generator.php';
 
 // Plugin activation hook
 function elearn_activate() {
     // Code that runs on activation (e.g., create tables, set defaults)
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'quiz';
+    elearn_database_generator();
 
-    $charset_collate = $wpdb->get_charset_collate();
-
-    $sql = "CREATE TABLE $table_name (
-        id mediumint(9) NOT NULL AUTO_INCREMENT,
-        title varchar(255) NOT NULL,
-        description text NOT NULL,
-        created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        PRIMARY KEY  (id)
-    ) $charset_collate;";
-
-    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-    dbDelta( $sql );
+    elearn_add_student_role();
+    elearn_add_manager_role();
 
     flush_rewrite_rules();
 }

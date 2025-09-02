@@ -4,31 +4,31 @@
 function elearn_add_admin_menu()
 {
     add_menu_page(
-        'Quiz Table',
-        'Quiz Table',
+        'Elearn Modules',
+        'Module List',
         'manage_options',
-        'elearn-quiz-table',
-        'elearn_quiz_table_page',
+        'elearn-module-table',
+        'elearn_module_table_page',
         'dashicons-welcome-learn-more',
         6
     );
 }
 add_action('admin_menu', 'elearn_add_admin_menu');
 
-// Display quiz table data
-function elearn_quiz_table_page()
+// Display module table data
+function elearn_module_table_page()
 {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'quiz';
+    $table_name = $wpdb->prefix . 'elearn_module';
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 
-    echo '<div class="wrap"><h1>Quiz Table</h1>';
+    echo '<div class="wrap"><h1>Module Table</h1>';
     if (!empty($results)) {
         echo '<table class="widefat fixed" cellspacing="0">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Title</th>
+                        <th>Name</th>
                         <th>Description</th>
                         <th>Created At</th>
                     </tr>
@@ -36,15 +36,15 @@ function elearn_quiz_table_page()
                 <tbody>';
         foreach ($results as $row) {
             echo '<tr>
-                    <td>' . esc_html($row->id) . '</td>
-                    <td>' . esc_html($row->title) . '</td>
-                    <td>' . esc_html($row->description) . '</td>
-                    <td>' . esc_html($row->created_at) . '</td>
+                    <td>' . esc_html($row->module_id) . '</td>
+                    <td>' . esc_html($row->module_name) . '</td>
+                    <td>' . esc_html($row->module_description) . '</td>
+                    <td>' . esc_html($row->module_crated) . '</td>
                   </tr>';
         }
         echo '</tbody></table>';
     } else {
-        echo '<p>No quiz data found.</p>';
+        echo '<p>No module data found.</p>';
     }
     echo '</div>';
 }
