@@ -18,7 +18,7 @@ function elearn_database_generator() {
     $tables[] = "CREATE TABLE {$prefix}attempt (
         attempt_id BIGINT NOT NULL AUTO_INCREMENT,
         attempt_time DATETIME NULL DEFAULT '0000-00-00 00:00:00',
-        attempt_scorce VARCHAR(45) NULL,
+        attempt_score VARCHAR(45) NULL,
         user_id BIGINT UNSIGNED NOT NULL,
         PRIMARY KEY (attempt_id)
     ) $charset_collate;";
@@ -35,14 +35,14 @@ function elearn_database_generator() {
         module_id BIGINT NOT NULL AUTO_INCREMENT,
         module_name VARCHAR(45) NULL,
         module_description LONGTEXT NULL,
-        module_crated DATETIME NULL DEFAULT '0000-00-00 00:00:00',
+        module_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
         certificate_id BIGINT NOT NULL,
         PRIMARY KEY (module_id)
     ) $charset_collate;";
 
     $tables[] = "CREATE TABLE {$prefix}question (
         question_id BIGINT NOT NULL AUTO_INCREMENT,
-        qustion_type ENUM('multiple_choice', 'true_false', 'short_answer') NULL,
+        question_type ENUM('multiple_choice', 'true_false', 'short_answer') NULL,
         question_text LONGTEXT NULL,
         PRIMARY KEY (question_id)
     ) $charset_collate;";

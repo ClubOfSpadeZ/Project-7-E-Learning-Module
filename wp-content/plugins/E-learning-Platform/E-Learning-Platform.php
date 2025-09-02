@@ -63,6 +63,23 @@ function elearn_init() {
 }
 add_action( 'plugins_loaded', 'elearn_init' );
 
+// Frontend router to handle plugin pages
+function elearn_frontend_router() {
+    if ( ! is_user_logged_in() ) {
+        return;
+    }
+
+    if ( isset($_GET['elearn_page']) ) {
+        switch ($_GET['elearn_page']) {
+            case 'user-module-dash':
+                include ELEARN_PATH . 'pages/users/user-module-dash.php';
+                exit;
+        }
+    }
+}
+add_action('template_redirect', 'elearn_frontend_router');
+
+
 // Example: Add settings link on plugin page
 function elearn_settings_link( $links ) {
     $settings_link = '<a href="options-general.php?page=elearn-settings">' . __( 'Settings', 'my-custom-plugin' ) . '</a>';

@@ -36,15 +36,18 @@ function elearn_module_table_page()
                 <tbody>';
         foreach ($results as $row) {
             $edit_url = admin_url('admin.php?page=elearn-edit-module&module_id=' . intval($row->module_id));
-            echo '<tr>
+            $dashboard_url = home_url('?elearn_page=user-module-dash');
+               echo '<tr>
                     <td>' . esc_html($row->module_id) . '</td>
                     <td>' . esc_html($row->module_name) . '</td>
                     <td>' . esc_html($row->module_description) . '</td>
                     <td>' . esc_html($row->module_crated) . '</td>
                     <td><a href="' . esc_url($edit_url) . '" class="button">Edit</a></td>
-                  </tr>';
+                    <td><a href="' . esc_url($dashboard_url) . '" class="button">View</a></td>
+                </tr>';
         }
         echo '</tbody></table>';
+        echo '<p><a href="' . esc_url($dashboard_url) . '" class="button button-primary">Go to Dashboard</a></p>';
     } else {
         echo '<p>No module data found.</p>';
     }

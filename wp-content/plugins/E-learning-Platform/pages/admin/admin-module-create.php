@@ -16,7 +16,7 @@ add_action( 'admin_menu', 'elearn_add_module_create_menu' );
 // Display and process the module creation form
 function elearn_module_create_page() {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'quiz';
+    $table_name = $wpdb->prefix . 'elearn_module';
 
     // Handle form submission
     if ( isset( $_POST['elearn_module_create_nonce'] ) && wp_verify_nonce( $_POST['elearn_module_create_nonce'], 'elearn_module_create' ) ) {
@@ -27,8 +27,8 @@ function elearn_module_create_page() {
             $wpdb->insert(
                 $table_name,
                 [
-                    'title' => $title,
-                    'description' => $description,
+                    'module_name' => $title,
+                    'module_description' => $description,
                 ]
             );
             echo '<div class="notice notice-success is-dismissible"><p>Quiz created successfully!</p></div>';
