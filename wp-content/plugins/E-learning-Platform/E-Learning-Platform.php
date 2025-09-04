@@ -27,6 +27,7 @@ define( 'ELEARN_URL', plugin_dir_url( __FILE__ ) );
 require_once ELEARN_PATH . 'pages/admin/admin-module-table.php';
 require_once ELEARN_PATH . 'pages/admin/admin-module-create.php';
 require_once ELEARN_PATH . 'pages/admin/admin-module-edit.php';
+require_once ELEARN_PATH . 'pages/admin/admin-question-create.php';
 
 // Create custom user roles for elerning platform
 require_once ELEARN_PATH . 'roles.php';
