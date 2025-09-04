@@ -3,11 +3,30 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 get_header();
-?>
+//change to results page in future
+$view_url = home_url('/view-module');
+
+echo '
 <div class="elearn-dashboard">
     <h2>Welcome to Your E-Learning Dashboard</h2>
-    <a href="<?php echo home_url('?elearn_page=modules'); ?>" class="button">View Modules</a>
-    <a href="<?php echo home_url('?elearn_page=assessment-results'); ?>" class="button">View Results</a>
+    <a href="' .esc_url($view_url).'" class="button">View Results</a>
 </div>
-<?php
+<br>
+<div class="elearn-modules">
+    <h2>Available Modules</h2>
+    <ul>';
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'elearn_module';
+        $results = $wpdb->get_results("SELECT * FROM $table_name");
+        if (!empty($results)) {
+            foreach ($results as $row) {
+                $module_view_url = home_url('/view-module').'?module_id='.intval($row->module_id);
+                echo '<li> <a href="'.esc_url($module_view_url).'">'. esc_html($row->module_name) . ': ' . esc_html($row->module_description) . '</a></li>';
+            }
+        } else {
+            echo '<p>No modules available at the moment.</p>';
+        }
+    echo '</ul>
+</div>';
+
 get_footer();
