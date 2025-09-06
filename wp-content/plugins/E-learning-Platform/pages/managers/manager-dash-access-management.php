@@ -1,10 +1,8 @@
-
 <?php
 // Make sure this is running inside WordPress
 if ( ! defined( 'ABSPATH' ) ) exit;
 function elearn_manager_dash_access_management() {
     $page_title = 'Access Management';
-    $page_check = get_page_by_title($page_title);
 
     // Check if the page already exists
     if (!get_page_by_path('access-management')) {
@@ -25,14 +23,10 @@ function elearn_manager_dash_access_management_shortcode() {
     ob_start();
     ?>
     <div class="access-management">
-        <h1>Manager Dashboard</h1>
-        <ul>
-                <li>
-                    <a href="">View Details</a>
-                </li>
-        </ul>
+        <h1>Manage Organisation</h1>
+        
     </div>
     <?php
     return ob_get_clean();
 }
-add_shortcode('elearn_home', 'elearn_manager_dash_access_management_shortcode');
+add_shortcode('access_management', 'elearn_manager_dash_access_management_shortcode');

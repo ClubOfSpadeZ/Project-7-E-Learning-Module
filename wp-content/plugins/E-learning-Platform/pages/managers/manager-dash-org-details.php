@@ -1,10 +1,8 @@
-
 <?php
 // Make sure this is running inside WordPress
 if ( ! defined( 'ABSPATH' ) ) exit;
 function elearn_manager_dash_org_details() {
     $page_title = 'Organisation Details';
-    $page_check = get_page_by_title($page_title);
 
     // Check if the page already exists
     if (!get_page_by_path('organisation-details')) {
@@ -25,14 +23,16 @@ function elearn_manager_dash_org_details_shortcode() {
     ob_start();
     ?>
     <div class="organisation-details">
-        <h1>Manager Dashboard</h1>
+        <h1>Organisation Details</h1>
         <ul>
                 <li>
-                    <a href="">View Details</a>
+                    <a href="">Edit Details</a>
                 </li>
         </ul>
     </div>
     <?php
     return ob_get_clean();
 }
-add_shortcode('elearn_home', 'elearn_manager_dash_org_details_shortcode');
+add_shortcode('organisation_details', 'elearn_manager_dash_org_details_shortcode');
+
+
