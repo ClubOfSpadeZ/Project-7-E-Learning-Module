@@ -10,6 +10,8 @@ echo '
 <div class="elearn-dashboard">
     <h2>Welcome to Your E-Learning Dashboard</h2>
     <a href="' .esc_url($view_url).'" class="button">View Results</a>
+
+
 </div>
 <br>
 <div class="elearn-modules">

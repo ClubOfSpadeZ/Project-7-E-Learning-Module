@@ -124,3 +124,144 @@ function elearn_settings_link( $links ) {
     return $links;
 }
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'elearn_settings_link' );
+
+
+// Shortcode to display quiz
+add_shortcode('elearn_quiz', 'elearn_quiz_shortcode');
+
+function elearn_quiz_shortcode($atts) {
+    global $wpdb;
+    $module_id = intval($_GET['module_id'] ?? 0);
+
+    if (!$module_id) {
+        return '<p>Invalid module ID or no module selected.</p>';
+    }
+
+    $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}elearn_module WHERE module_id=%d", $module_id));
+    if (!$module) {
+        return '<p>Module not found.</p>';
+    }
+
+    // Get questions & choices
+    $rows = $wpdb->get_results($wpdb->prepare("
+        SELECT q.question_id, q.question_text, q.question_type, c.choice_id, c.choice_data, c.choice_correct
+        FROM {$wpdb->prefix}elearn_module m
+        JOIN {$wpdb->prefix}elearn_content_in_modules cim 
+            ON m.module_id = cim.module_module_id
+        JOIN {$wpdb->prefix}elearn_question q 
+            ON cim.question_question_id = q.question_id
+        LEFT JOIN {$wpdb->prefix}elearn_choice c 
+            ON q.question_id = c.question_id
+        WHERE m.module_id = %d
+        ORDER BY q.question_id, c.choice_id
+    ", $module_id));
+
+    // Organize into nested array
+    $questions = [];
+    foreach ($rows as $row) {
+        $qid = $row->question_id;
+        if (!isset($questions[$qid])) {
+            $questions[$qid] = [
+                'text' => $row->question_text,
+                'type' => $row->question_type,
+                'choices' => []
+            ];
+        }
+        if ($row->choice_id) {
+            $questions[$qid]['choices'][] = [
+                'id' => $row->choice_id,
+                'data' => $row->choice_data,
+                'correct' => (bool) $row->choice_correct,
+            ];
+        }
+    }
+
+    // Output form HTML
+    ob_start();
+    ?>
+    <form id="elearnForm">
+        <?php wp_nonce_field('submit_quiz', 'quiz_nonce'); ?>
+        <input type="hidden" name="module_id" value="<?php echo $module_id; ?>">
+        <?php foreach ($questions as $qid => $qdata): ?>
+            <div class="elearn-question" data-qid="<?php echo $qid; ?>">
+                <h3><?php echo esc_html($qdata['text']); ?></h3>
+                <?php if ($qdata['type'] === 'multiple_choice' || $qdata['type'] === 'true_false'): ?>
+                    <?php foreach ($qdata['choices'] as $choice): ?>
+                        <label>
+                            <input type="radio" name="question_<?php echo $qid; ?>" value="<?php echo $choice['id']; ?>">
+                            <?php echo esc_html($choice['data']); ?>
+                        </label><br>
+                    <?php endforeach; ?>
+                <?php elseif ($qdata['type'] === 'short_answer'): ?>
+                    <label>
+                        Answer: <input type="text" name="question_<?php echo $qid; ?>">
+                    </label>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="quizResult"></div>
+    <?php
+    return ob_get_clean();
+}
+
+
+// Server AJAX request to process quiz submission
+add_action('wp_ajax_check_quiz', 'elearn_quiz_check');
+add_action('wp_ajax_nopriv_check_quiz', 'elearn_quiz_check');
+
+function elearn_quiz_check() {
+    global $wpdb;
+
+    if (!isset($_POST['quiz_nonce']) || !wp_verify_nonce($_POST['quiz_nonce'], 'submit_quiz')) {
+        wp_send_json_error('Invalid request');
+    }
+
+    $module_id = intval($_POST['module_id']);
+    $answers = json_decode(stripslashes($_POST['answers']), true);
+
+    $rows = $wpdb->get_results($wpdb->prepare("
+        SELECT q.question_id, q.question_type, c.choice_id, c.choice_correct, c.choice_data
+        FROM {$wpdb->prefix}elearn_module m
+        JOIN {$wpdb->prefix}elearn_content_in_modules cim 
+            ON m.module_id = cim.module_module_id
+        JOIN {$wpdb->prefix}elearn_question q 
+            ON cim.question_question_id = q.question_id
+        LEFT JOIN {$wpdb->prefix}elearn_choice c 
+            ON q.question_id = c.question_id
+        WHERE m.module_id = %d
+    ", $module_id));
+
+    $correct_answers = [];
+    foreach ($rows as $row) {
+        if ($row->question_type === 'short_answer') {
+            $correct_answers[$row->question_id] = strtolower(trim($row->choice_data ?? ''));
+        } else {
+            if ($row->choice_correct) {
+                $correct_answers[$row->question_id] = $row->choice_id;
+            }
+        }
+    }
+
+    $score = 0;
+    foreach ($answers as $qid => $ans) {
+        if (isset($correct_answers[$qid])) {
+            if (is_numeric($ans) && $ans == $correct_answers[$qid]) {
+                $score++;
+            } elseif (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+                $score++;
+            }
+        }
+    }
+
+    wp_send_json_success(['score' => $score, 'total' => count($correct_answers)]);
+}
+
+// Enqueue script
+add_action('wp_enqueue_scripts', function() {
+    wp_enqueue_script('elearn-quiz', ELEARN_URL . 'js/elearn.js', ['jquery'], null, true);
+    wp_localize_script('elearn-quiz', 'elearnQuiz', [
+        'ajaxurl' => admin_url('admin-ajax.php')
+    ]);
+});

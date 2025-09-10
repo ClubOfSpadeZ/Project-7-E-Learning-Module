@@ -28,7 +28,7 @@ function elearn_edit_module_page() {
             $wpdb->insert(
                 $question_table,
                 [
-                    'qustion_type' => $question_type,
+                    'question_type' => $question_type,
                     'question_text' => $question_text
                 ]
             );
@@ -114,7 +114,7 @@ function elearn_edit_module_page() {
             echo '<h2>Questions</h2>';
             foreach ($questions as $question) {
                 echo '<div style="margin-bottom:20px;padding:10px;border:1px solid #ccc;">';
-                echo '<strong>' . esc_html($question->question_text) . '</strong> (' . esc_html($question->qustion_type) . ')';
+                echo '<strong>' . esc_html($question->question_text) . '</strong> (' . esc_html($question->question_type) . ')';
 
                 // List choices for this question
                 $choices = $wpdb->get_results($wpdb->prepare("SELECT * FROM $choice_table WHERE question_id = %d", $question->question_id));

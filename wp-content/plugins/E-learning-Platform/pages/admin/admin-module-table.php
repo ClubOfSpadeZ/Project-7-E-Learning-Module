@@ -23,7 +23,7 @@ function elearn_module_table_page()
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 
     $dashboard_url = home_url('/dashboard');
-    
+
     echo '<div class="wrap"><h1>Module Table</h1>';
     if (!empty($results)) {
         echo '<table class="widefat fixed" cellspacing="0">
@@ -37,6 +37,7 @@ function elearn_module_table_page()
                 </thead>
                 <tbody>';
         foreach ($results as $row) {
+            $module_view_url = home_url('/view-module').'?module_id='.intval($row->module_id);
             $edit_url = admin_url('admin.php?page=elearn-edit-module&module_id=' . intval($row->module_id));
                echo '<tr>
                     <td>' . esc_html($row->module_id) . '</td>
@@ -44,7 +45,7 @@ function elearn_module_table_page()
                     <td>' . esc_html($row->module_description) . '</td>
                     <td>' . esc_html($row->module_crated) . '</td>
                     <td><a href="' . esc_url($edit_url) . '" class="button">Edit</a></td>
-                    <td><a href="' . esc_url($dashboard_url) . '" class="button">View</a></td>
+                    <td><a href="' . esc_url($module_view_url) . '" class="button">View</a></td>
                 </tr>';
         }
         echo '</tbody></table>';
