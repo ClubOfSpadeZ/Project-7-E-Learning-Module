@@ -73,20 +73,20 @@ add_action( 'plugins_loaded', 'elearn_init' );
 // Frontend router
 function elearn_frontend_router() {
     if ( ! is_user_logged_in() ) {
-        wp_redirect( wp_login_url() ); // Redirect guests to login
+        wp_redirect( wp_login_url() );
         exit;
     }
 
     $elearn_page = get_query_var('elearn_page');
+
     switch ($elearn_page) {
         case 'user-module-dash':
-            include ELEARN_PATH . 'pages/users/user-module-dash.php';
+            require_once ELEARN_PATH . 'pages/users/user-module-dash.php';
             exit;
         case 'user-module-view':
-            include ELEARN_PATH . 'pages/users/user-module-view.php';
+            require_once ELEARN_PATH . 'pages/users/user-module-view.php';
             exit;
     }
-   
 }
 add_action('template_redirect', 'elearn_frontend_router');
 
@@ -124,87 +124,6 @@ function elearn_settings_link( $links ) {
     return $links;
 }
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'elearn_settings_link' );
-
-
-// Shortcode to display quiz
-add_shortcode('elearn_quiz', 'elearn_quiz_shortcode');
-
-function elearn_quiz_shortcode($atts) {
-    global $wpdb;
-    $module_id = intval($_GET['module_id'] ?? 0);
-
-    if (!$module_id) {
-        return '<p>Invalid module ID or no module selected.</p>';
-    }
-
-    $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}elearn_module WHERE module_id=%d", $module_id));
-    if (!$module) {
-        return '<p>Module not found.</p>';
-    }
-
-    // Get questions & choices
-    $rows = $wpdb->get_results($wpdb->prepare("
-        SELECT q.question_id, q.question_text, q.question_type, c.choice_id, c.choice_data, c.choice_correct
-        FROM {$wpdb->prefix}elearn_module m
-        JOIN {$wpdb->prefix}elearn_content_in_modules cim 
-            ON m.module_id = cim.module_module_id
-        JOIN {$wpdb->prefix}elearn_question q 
-            ON cim.question_question_id = q.question_id
-        LEFT JOIN {$wpdb->prefix}elearn_choice c 
-            ON q.question_id = c.question_id
-        WHERE m.module_id = %d
-        ORDER BY q.question_id, c.choice_id
-    ", $module_id));
-
-    // Organize into nested array
-    $questions = [];
-    foreach ($rows as $row) {
-        $qid = $row->question_id;
-        if (!isset($questions[$qid])) {
-            $questions[$qid] = [
-                'text' => $row->question_text,
-                'type' => $row->question_type,
-                'choices' => []
-            ];
-        }
-        if ($row->choice_id) {
-            $questions[$qid]['choices'][] = [
-                'id' => $row->choice_id,
-                'data' => $row->choice_data,
-                'correct' => (bool) $row->choice_correct,
-            ];
-        }
-    }
-
-    // Output form HTML
-    ob_start();
-    ?>
-    <form id="elearnForm">
-        <?php wp_nonce_field('submit_quiz', 'quiz_nonce'); ?>
-        <input type="hidden" name="module_id" value="<?php echo $module_id; ?>">
-        <?php foreach ($questions as $qid => $qdata): ?>
-            <div class="elearn-question" data-qid="<?php echo $qid; ?>">
-                <h3><?php echo esc_html($qdata['text']); ?></h3>
-                <?php if ($qdata['type'] === 'multiple_choice' || $qdata['type'] === 'true_false'): ?>
-                    <?php foreach ($qdata['choices'] as $choice): ?>
-                        <label>
-                            <input type="radio" name="question_<?php echo $qid; ?>" value="<?php echo $choice['id']; ?>">
-                            <?php echo esc_html($choice['data']); ?>
-                        </label><br>
-                    <?php endforeach; ?>
-                <?php elseif ($qdata['type'] === 'short_answer'): ?>
-                    <label>
-                        Answer: <input type="text" name="question_<?php echo $qid; ?>">
-                    </label>
-                <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
-        <input type="submit" value="Submit">
-    </form>
-    <div id="quizResult"></div>
-    <?php
-    return ob_get_clean();
-}
 
 
 // Server AJAX request to process quiz submission
@@ -265,3 +184,40 @@ add_action('wp_enqueue_scripts', function() {
         'ajaxurl' => admin_url('admin-ajax.php')
     ]);
 });
+
+// Log attempt + maybe certificate
+add_action('wp_ajax_log_attempt', 'elearn_log_attempt');
+add_action('wp_ajax_nopriv_log_attempt', 'elearn_log_attempt');
+
+function elearn_log_attempt() {
+    check_ajax_referer('submit_quiz', 'quiz_nonce');
+
+    global $wpdb;
+    $user_id = get_current_user_id();
+    $module_id = intval($_POST['module_id']);
+    $score = intval($_POST['score']);
+    $total = intval($_POST['total']);
+
+    $attempt_tbl     = $wpdb->prefix . 'elearn_attempt';
+    $certificate_tbl = $wpdb->prefix . 'elearn_certificate';
+
+    // Always log attempt
+    $wpdb->insert($attempt_tbl, [
+        'attempt_time' => current_time('mysql'),
+        'attempt_score' => $score,
+        'user_id' => $user_id,
+        'module_module_id' => $module_id
+    ]);
+    $attempt_id = $wpdb->insert_id;
+
+    // If passed, insert certificate ----------------------in future, check if already exists and overwrite
+    if ($score === $total) {
+        $wpdb->insert($certificate_tbl, [
+            'certificate_completion' => current_time('mysql'),
+            'attempt_id' => $attempt_id,
+            'user_id' => $user_id
+        ]);
+    }
+
+    wp_send_json_success('Attempt logged');
+}
