@@ -24,10 +24,12 @@ define( 'ELEARN_URL', plugin_dir_url( __FILE__ ) );
 
 // Include main class file (optional if you want OOP structure)
 // require_once MYPLUGIN_PATH . 'includes/class-myplugin.php';
-require_once ELEARN_PATH . 'pages/admin/admin-module-table.php';
+require_once ELEARN_PATH . 'pages/admin/admin-module.php';
 require_once ELEARN_PATH . 'pages/admin/admin-module-create.php';
 require_once ELEARN_PATH . 'pages/admin/admin-module-edit.php';
+require_once ELEARN_PATH . 'pages/admin/admin-question.php';
 require_once ELEARN_PATH . 'pages/admin/admin-question-create.php';
+require_once ELEARN_PATH . 'pages/admin/admin-question-edit.php';
 
 // Create custom user roles for elerning platform
 require_once ELEARN_PATH . 'roles.php';

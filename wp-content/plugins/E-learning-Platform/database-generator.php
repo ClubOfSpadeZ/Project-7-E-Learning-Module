@@ -36,6 +36,7 @@ function elearn_database_generator() {
         module_name VARCHAR(45) NULL,
         module_description LONGTEXT NULL,
         module_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
+        module_pdf_path VARCHAR(255) NULL,
         certificate_id BIGINT NOT NULL,
         PRIMARY KEY (module_id)
     ) $charset_collate;";
@@ -82,17 +83,29 @@ function elearn_database_generator() {
     ) $charset_collate;";
 
     $tables[] = "CREATE TABLE {$prefix}access (
-        access_id INT AUTO_INCREMENT PRIMARY KEY,
+        access_id INT AUTO_INCREMENT,
         access_code VARCHAR(100) NOT NULL UNIQUE,
         organisation_id INT NOT NULL,
         is_used TINYINT(1) DEFAULT 0,
         access_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         access_used TIMESTAMP DEFAULT NULL,
-        PRIMARY KEY (module_module_id, licence_licence_id)
+        PRIMARY KEY (access_id)
     ) $charset_collate;";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     foreach ($tables as $sql) {
         dbDelta($sql);
     }
+
+    foreach ($tables as $sql) {
+        $wpdb->query($sql);
+
+        if (!empty($wpdb->last_error)) {
+            $error_message = "SQL Error: " . $wpdb->last_error;
+            error_log($error_message, 3, __DIR__ . '/sql-errors.log'); // Log to a custom file
+            echo "<pre>" . esc_html($error_message) . "</pre>"; // Display the error
+        }
+    }
+
+    wp_cache_flush(); 
 }

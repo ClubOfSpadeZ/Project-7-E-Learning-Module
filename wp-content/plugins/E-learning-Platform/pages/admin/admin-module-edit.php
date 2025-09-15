@@ -1,4 +1,5 @@
 <?php
+ob_start();
 
 function elearn_add_edit_module_menu() {
     add_submenu_page(
@@ -14,155 +15,187 @@ add_action('admin_menu', 'elearn_add_edit_module_menu');
 
 function elearn_edit_module_page() {
     global $wpdb;
-    $module_id = isset($_GET['module_id']) ? intval($_GET['module_id']) : 0;
-    $module_table = $wpdb->prefix . 'elearn_module';
+    $module_table  = $wpdb->prefix . 'elearn_module';
+    $content_table = $wpdb->prefix . 'elearn_content_in_modules';
     $question_table = $wpdb->prefix . 'elearn_question';
-    $choice_table = $wpdb->prefix . 'elearn_choice';
-    $content_in_modules_table = $wpdb->prefix . 'elearn_content_in_modules';
 
-    // Handle question creation
-    if (isset($_POST['create_question'])) {
-        $question_text = sanitize_text_field($_POST['question_text']);
-        $question_type = sanitize_text_field($_POST['question_type']);
-        if ($question_text && $question_type) {
-            $wpdb->insert(
-                $question_table,
-                [
-                    'qustion_type' => $question_type,
-                    'question_text' => $question_text
-                ]
-            );
-            echo '<div class="notice notice-success is-dismissible"><p>Question created!</p></div>';
+    $module_id = isset($_GET['module_id']) ? intval($_GET['module_id']) : (isset($_POST['module_id']) ? intval($_POST['module_id']) : 0);
+
+    // ---- Save logic ----
+    if ($module_id && isset($_POST['save_module'])) {
+        $module_name        = sanitize_text_field($_POST['module_Name']);
+        $module_description = sanitize_textarea_field($_POST['module_Description']);
+        $module_pdf_path = '';
+        if ($module_id) {
+            $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_table WHERE module_id = %d", $module_id));
+            $module_pdf_path = $module ? $module->module_pdf_path : '';
         }
-    }
 
-    // Handle choice creation
-    if (isset($_POST['create_choice'])) {
-        $choice_data = sanitize_text_field($_POST['choice_data']);
-        $choice_correct = isset($_POST['choice_correct']) ? 1 : 0;
-        $question_id = intval($_POST['question_id']);
-        if ($choice_data && $question_id) {
-            $wpdb->insert(
-                $choice_table,
-                [
-                    'question_id' => $question_id,
-                    'choice_data' => $choice_data,
-                    'choice_correct' => $choice_correct
-                ]
-            );
-            echo '<div class="notice notice-success is-dismissible"><p>Choice added!</p></div>';
-        }
-    }
+        // Handle file upload
+        if (!empty($_FILES['module_PDF']['name'])) {
+            $uploaded_file = $_FILES['module_PDF'];
+            $upload_dir = wp_upload_dir();
+            $upload_path = $upload_dir['basedir'] . '/elearn-modules/';
+            $upload_url = $upload_dir['baseurl'] . '/elearn-modules/';
 
-    // Handle linking question to module
-    if (isset($_POST['link_question_module'])) {
-        $selected_module_id = intval($_POST['selected_module_id']);
-        $question_id = intval($_POST['question_id']);
-        if ($selected_module_id && $question_id) {
-            // Prevent duplicate entries
-            $exists = $wpdb->get_var($wpdb->prepare(
-                "SELECT COUNT(*) FROM $content_in_modules_table WHERE module_module_id = %d AND question_question_id = %d",
-                $selected_module_id, $question_id
-            ));
-            if (!$exists) {
-                $wpdb->insert(
-                    $content_in_modules_table,
-                    [
-                        'module_module_id' => $selected_module_id,
-                        'question_question_id' => $question_id
-                    ]
-                );
-                echo '<div class="notice notice-success is-dismissible"><p>Question linked to module!</p></div>';
+            // Ensure the directory exists
+            if (!file_exists($upload_path)) {
+                wp_mkdir_p($upload_path);
+            }
+
+            $file_name = sanitize_file_name($uploaded_file['name']);
+            $file_path = $upload_path . $file_name;
+            $file_url = $upload_url . $file_name;
+
+            if (move_uploaded_file($uploaded_file['tmp_name'], $file_path)) {
+                $module_pdf_path = $file_url;
             } else {
-                echo '<div class="notice notice-warning is-dismissible"><p>Already linked!</p></div>';
+                // echo '<div class="notice notice-error is-dismissible"><p>Failed to upload PDF.</p></div>';
             }
+        }
+
+        // Update module details
+        $wpdb->update(
+            $module_table,
+            [
+                'module_name'        => $module_name,
+                'module_description' => $module_description,
+                'module_pdf_path' => $module_pdf_path // Save the PDF path
+            ],
+            [ 'module_id' => $module_id ],
+            [ '%s', '%s', '%s' ],
+            [ '%d' ]
+        );
+
+        // Update linked questions
+        $new_linked = isset($_POST['linked_questions']) ? array_map('intval', $_POST['linked_questions']) : [];
+        $wpdb->delete($content_table, ['module_module_id' => $module_id]);
+        foreach ($new_linked as $qid) {
+            $wpdb->insert($content_table, [
+                'module_module_id'    => $module_id,
+                'question_question_id' => $qid
+            ]);
+        }
+
+        wp_redirect(admin_url('admin.php?page=elearn-edit-module&module_id=' . $module_id . '&saved=1'));
+        exit;
+    }
+
+    // ---- Fetch module ----
+    $module = null;
+    if ($module_id) {
+        $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_table WHERE module_id = %d", $module_id));
+    }
+
+    if (!$module) {
+        echo '<div class="notice notice-error"><p>Module not found.</p></div>';
+        return;
+    }
+
+    // ---- Fetch questions ----
+    $linked_questions = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT q.question_id, q.question_text
+             FROM $question_table q
+             INNER JOIN $content_table c ON q.question_id = c.question_question_id
+             WHERE c.module_module_id = %d",
+            $module_id
+        )
+    );
+
+    $all_questions = $wpdb->get_results("SELECT question_id, question_text FROM $question_table");
+    $linked_ids = wp_list_pluck($linked_questions, 'question_id');
+
+    // ---- Page Content ----
+
+    echo '<div class="wrap"><h1>Edit Module</h1></div>';
+    echo '<form method="post" enctype="multipart/form-data">
+            <label for="module_Name">Module Name:</label>
+            <br>
+            <input type="hidden" name="module_id" value="' . intval($module_id) . '">
+            <input type="text" id="module_Name" name="module_Name" class="regular-text" value="' . esc_attr($module->module_name) . '">
+            <br><br>
+            <label for="module_Description">Module Description:</label>
+            <br>
+            <textarea id="module_Description" name="module_Description" class="regular-text" rows="5">' . esc_textarea($module->module_description) . '</textarea>
+            <br><br>
+            <label for="module_PDF">Upload PDF:</label>
+            <br>
+            <input type="file" id="module_PDF" name="module_PDF" accept=".pdf">
+            <br><br>';
+
+    if (!empty($module->module_pdf_path)) {
+        echo '<p>uploading a new PDF wont delete the existing one but will unlnk it from the database</p>';
+        echo '<p>Current PDF: <a href="' . esc_url($module->module_pdf_path) . '" target="_blank">View PDF</a></p>';
+    }
+
+    echo '<div class="wrap"><h2>Module Content</h2></div>';
+    
+    // Build an array of linked question IDs for easy lookup
+    $linked_ids = [];
+    foreach ($linked_questions as $q) {
+        $linked_ids[$q->question_id] = true;
+    }
+
+    echo '<label>Module Questions</label>';
+    echo '<table class="widefat fixed" cellspacing="0" style="width: auto;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Question Text</th>
+                    <th>Linked</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+    // List linked questions with Remove/Edit
+    foreach ($linked_questions as $row) {
+        $is_linked = isset($linked_ids[$row->question_id]);
+        echo '<tr>
+                <td>' . esc_html($row->question_id) . '</td>
+                <td>' . esc_html($row->question_text) . '</td>
+                <td>
+                    <input type="checkbox" name="linked_questions[]" value="' . intval($row->question_id) . '" ' . ($is_linked ? 'checked' : '') . '>
+                </td>
+                <td>
+                    <form method="post" action="' . admin_url('admin.php?page=elearn-edit-question') . '" style="display:inline;">
+                        <input type="hidden" name="question_id" value="' . intval($row->question_id) . '">
+                        <input type="submit" class="button" value="Edit">
+                    </form>
+                </td>
+            </tr>';
+    }
+
+    $i = 1;
+
+    // List unlinked questions with Add/Edit
+    foreach ($all_questions as $row) {
+        if (!isset($linked_ids[$row->question_id])) {
+            $is_linked = isset($linked_ids[$row->question_id]);
+            if ($i == 1) {
+                echo '<tr><td colspan="4" style="background:#f9f9f9; text-align:center; font-weight:bold; height:1em; padding:0px;"></td></tr>';
+                $i--;
+            }
+            echo '<tr>
+                    <td>' . esc_html($row->question_id) . '</td>
+                    <td>' . esc_html($row->question_text) . '</td>
+                    <td>
+                        <input type="checkbox" name="linked_questions[]" value="' . intval($row->question_id) . '" ' . ($is_linked ? 'checked' : '') . '>
+                    </td>
+                    <td>
+                        <form method="post" action="' . admin_url('admin.php?page=elearn-edit-question') . '" style="display:inline;">
+                            <input type="hidden" name="question_id" value="' . intval($row->question_id) . '">
+                            <input type="submit" class="button" value="Edit">
+                        </form>
+                    </td>   
+                </tr>';
         }
     }
 
-    // Get module info
-    $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_table WHERE module_id = %d", $module_id));
-    echo '<div class="wrap">';
-    if ($module) {
-        echo '<h1>Edit Module: ' . esc_html($module->module_name) . '</h1>';
-        echo '<h2>Add Question</h2>
-            <form method="post">
-                <table class="form-table">
-                    <tr>
-                        <th><label for="question_text">Question Text</label></th>
-                        <td><input type="text" name="question_text" id="question_text" class="regular-text" required></td>
-                    </tr>
-                    <tr>
-                        <th><label for="question_type">Question Type</label></th>
-                        <td>
-                            <select name="question_type" id="question_type">
-                                <option value="multiple_choice">Multiple Choice</option>
-                                <option value="true_false">True/False</option>
-                                <option value="short_answer">Short Answer</option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-                <p><input type="submit" name="create_question" class="button-primary" value="Create Question"></p>
-            </form>';
 
-        // List all modules for dropdowns
-        $all_modules = $wpdb->get_results("SELECT * FROM $module_table");
+    echo '</tbody></table><br>';
+    echo '<input type="submit" name="save_module" class="button button-primary" value="Save All Changes">';
+    echo '</form>';
 
-        // List questions for this module
-        $questions = $wpdb->get_results("SELECT * FROM $question_table");
-        if ($questions) {
-            echo '<h2>Questions</h2>';
-            foreach ($questions as $question) {
-                echo '<div style="margin-bottom:20px;padding:10px;border:1px solid #ccc;">';
-                echo '<strong>' . esc_html($question->question_text) . '</strong> (' . esc_html($question->qustion_type) . ')';
-
-                // List choices for this question
-                $choices = $wpdb->get_results($wpdb->prepare("SELECT * FROM $choice_table WHERE question_id = %d", $question->question_id));
-                if ($choices) {
-                    echo '<ul>';
-                    foreach ($choices as $choice) {
-                        echo '<li>' . esc_html($choice->choice_data) . ($choice->choice_correct ? ' <strong>(Correct)</strong>' : '') . '</li>';
-                    }
-                    echo '</ul>';
-                }
-
-                // Add Choice form
-                echo '<form method="post" style="margin-top:10px;">
-                        <input type="hidden" name="question_id" value="' . intval($question->question_id) . '">
-                        <input type="text" name="choice_data" placeholder="Choice text" required>
-                        <label><input type="checkbox" name="choice_correct" value="1"> Correct</label>
-                        <input type="submit" name="create_choice" class="button" value="Add Choice">
-                      </form>';
-
-                // Link question to module dropdown
-                echo '<form method="post" style="margin-top:10px;">
-                        <input type="hidden" name="question_id" value="' . intval($question->question_id) . '">
-                        <select name="selected_module_id">';
-                foreach ($all_modules as $mod) {
-                    echo '<option value="' . intval($mod->module_id) . '"' . ($mod->module_id == $module_id ? ' selected' : '') . '>' . esc_html($mod->module_name) . '</option>';
-                }
-                echo '</select>
-                        <input type="submit" name="link_question_module" class="button" value="Link to Module">
-                      </form>';
-
-                // Show linked modules for this question
-                $linked_modules = $wpdb->get_results($wpdb->prepare(
-                    "SELECT m.module_name FROM $content_in_modules_table cim
-                     JOIN $module_table m ON cim.module_module_id = m.module_id
-                     WHERE cim.question_question_id = %d", $question->question_id));
-                if ($linked_modules) {
-                    echo '<p><strong>Linked Modules:</strong> ';
-                    foreach ($linked_modules as $lm) {
-                        echo esc_html($lm->module_name) . ' ';
-                    }
-                    echo '</p>';
-                }
-
-                echo '</div>';
-            }
-        }
-    } else {
-        echo '<p>Module not found.</p>';
-    }
-    echo '</div>';
 }
