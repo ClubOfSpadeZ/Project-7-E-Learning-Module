@@ -1,0 +1,23 @@
+name: 🚀 Deploy
+on:
+  push:
+    branches:
+    - main
+    - release/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Here is the deployment action
+      - name: Upload from output to a remote server via FTP
+        uses: modern-dev/ftp-mirror@v2
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_dir: "./wp-content/"
+          remote_dir: "./staging/wp-content/"
+          delete: "false"
+   #       exlude: "data/ cache/"
