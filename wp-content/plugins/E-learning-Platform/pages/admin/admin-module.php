@@ -59,6 +59,7 @@ function elearn_module_page()
                 </thead>
                 <tbody>';
         foreach ($results as $row) {
+            $module_view_url = home_url('/view-module').'?module_id='.intval($row->module_id);
             $edit_url = admin_url('admin.php?page=elearn-edit-module&module_id=' . intval($row->module_id));
             $delete_url = admin_url('admin.php?page=elearn-module&action=delete&module_id=' . intval($row->module_id));
                echo '<tr>
@@ -68,7 +69,7 @@ function elearn_module_page()
                     <td>' . esc_html($row->module_created) . '</td>
                     <td>
                         <a href="' . esc_url($edit_url) . '" class="button">Edit</a>
-                        <a href="' . esc_url($dashboard_url) . '" class="button">View</a>
+                        <a href="' . esc_url($module_view_url) . '" class="button">View</a>
                         <a href="' . esc_url($delete_url) . '" class="button delete-module" style="color: red; border-color: red;" data-module-id="' . esc_attr($row->module_id) . '">Delete</a>
                     </td>
                 </tr>';
