@@ -29,12 +29,17 @@ require_once ELEARN_PATH . 'pages/admin/admin-module-create.php';
 require_once ELEARN_PATH . 'pages/admin/admin-module-edit.php';
 require_once ELEARN_PATH . 'pages/admin/admin-question.php';
 require_once ELEARN_PATH . 'pages/admin/admin-question-create.php';
+require_once ELEARN_PATH . 'pages/admin/admin-question-edit.php';
+require_once ELEARN_PATH . 'pages/admin/admin-organisation.php';
 
-//manager dashboard files
+// manager dashboard files
 require_once ELEARN_PATH . 'pages/managers/manager-dashboard.php';
 require_once ELEARN_PATH . 'pages/managers/manager-dash-user-details.php';
 require_once ELEARN_PATH . 'pages/managers/manager-dash-org-details.php';
 require_once ELEARN_PATH . 'pages/managers/manager-dash-access-management.php';
+
+// Student/User pages 
+require_once ELEARN_PATH . 'pages/users/user-register.php';
 
 // Create custom user roles for elerning platform
 require_once ELEARN_PATH . 'roles.php';
