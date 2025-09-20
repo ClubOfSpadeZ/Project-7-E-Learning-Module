@@ -29,7 +29,6 @@ require_once ELEARN_PATH . 'pages/admin/admin-module-create.php';
 require_once ELEARN_PATH . 'pages/admin/admin-module-edit.php';
 require_once ELEARN_PATH . 'pages/admin/admin-question.php';
 require_once ELEARN_PATH . 'pages/admin/admin-question-create.php';
-require_once ELEARN_PATH . 'pages/admin/admin-question-edit.php';
 
 //manager dashboard files
 require_once ELEARN_PATH . 'pages/managers/manager-dashboard.php';
@@ -222,4 +221,61 @@ function elearn_log_attempt() {
     }
 
     wp_send_json_success('Attempt logged');
+}
+
+
+add_action('admin_post_export_user_progress', 'elearn_handle_export_user_progress');
+add_action('admin_post_nopriv_export_user_progress', 'elearn_handle_export_user_progress');
+
+function elearn_handle_export_user_progress() {
+    if (empty($_POST['selected_users'])) {
+        wp_die('No users selected for export.');
+    }
+
+    global $wpdb;
+    $selected_user_ids = array_map('intval', $_POST['selected_users']);
+
+    // Fetch only selected users
+    $users = get_users(['include' => $selected_user_ids]);
+
+    // Fetch modules
+    $modules = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_module ORDER BY module_name ASC");
+
+    // Fetch attempts
+    $attempts = $wpdb->get_results("SELECT user_id, module_module_id, attempt_time FROM {$wpdb->prefix}elearn_attempt");
+
+    $attempt_lookup = [];
+    foreach ($attempts as $attempt) {
+        $attempt_lookup[$attempt->user_id][$attempt->module_module_id] = $attempt->attempt_time;
+    }
+
+    // Send CSV headers
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="user_progress_' . date('Y-m-d') . '.csv"');
+
+    $fp = fopen('php://output', 'w');
+
+    // Header row
+    $header = ['User'];
+    foreach ($modules as $module) {
+        $header[] = $module->module_name . ' (' . $module->module_id . ')';
+    }
+    fputcsv($fp, $header);
+
+    // Data rows
+    foreach ($users as $user) {
+        $row = [$user->display_name];
+        foreach ($modules as $module) {
+            if (isset($attempt_lookup[$user->ID][$module->module_id])) {
+                $dt = new DateTime($attempt_lookup[$user->ID][$module->module_id]);
+                $row[] = $dt->format('d/m/Y h:i A');
+            } else {
+                $row[] = 'N/A';
+            }
+        }
+        fputcsv($fp, $row);
+    }
+
+    fclose($fp);
+    exit;
 }

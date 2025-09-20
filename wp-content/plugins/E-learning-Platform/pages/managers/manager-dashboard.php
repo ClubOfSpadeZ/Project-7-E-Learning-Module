@@ -23,19 +23,6 @@ function elearn_manager_dash_shortcode() {
     // Get all users
     $users = get_users();
 
-    // Fake duplication for testing (~30–40 users)
-    // $duplicated_users = [];
-    // for ($i = 0; $i < 6; $i++) {
-    //     foreach ($users as $user) {
-    //         $fake = clone $user;
-    //         $fake->ID = $user->ID . "_$i"; // use original ID in lookup if needed
-    //         $fake->display_name = $user->display_name;
-    //         $fake->user_email = $user->user_email;
-    //         $duplicated_users[] = $fake;
-    //     }
-    // }
-    // $users = $duplicated_users;
-
     // Handle search & sort
     $search = isset($_POST['user_search']) ? sanitize_text_field($_POST['user_search']) : '';
     $sort   = isset($_POST['sort_order']) ? sanitize_text_field($_POST['sort_order']) : 'asc';
@@ -59,23 +46,22 @@ function elearn_manager_dash_shortcode() {
     $table_name = $wpdb->prefix . 'elearn_module';
     $modules = $wpdb->get_results("SELECT * FROM {$table_name} ORDER BY module_name ASC");
 
-    // // Duplicate modules for testing
-    // $duplicated_modules = [];
-    // for ($i = 0; $i < 6; $i++) {
-    //     foreach ($modules as $module) {
-    //         $duplicated_modules[] = $module;
-    //     }
-    // }
-    // $modules = $duplicated_modules;
-
     // Fetch all attempts
     $attempt_table = $wpdb->prefix . 'elearn_attempt';
-    $attempts = $wpdb->get_results("SELECT user_id, module_module_id, attempt_time FROM {$attempt_table}");
+    $attempts = $wpdb->get_results("SELECT attempt_id, user_id, module_module_id FROM {$attempt_table}");
 
-    // Prepare lookup array: [user_id][module_id] => attempt_time
-    $attempt_lookup = [];
-    foreach ($attempts as $attempt) {
-        $attempt_lookup[$attempt->user_id][$attempt->module_module_id] = $attempt->attempt_time;
+    // Fetch all certificates
+    $cert_table = $wpdb->prefix . 'elearn_certificate';
+    $certs = $wpdb->get_results("SELECT attempt_id, user_id, certificate_completion FROM {$cert_table}");
+
+    // Build lookup [user_id][module_id] => certificate_time
+    $cert_lookup = [];
+    foreach ($certs as $cert) {
+        foreach ($attempts as $attempt) {
+            if ($attempt->attempt_id == $cert->attempt_id) {
+                $cert_lookup[$attempt->user_id][$attempt->module_module_id] = $cert->certificate_completion;
+            }
+        }
     }
     ?>
 
@@ -92,6 +78,7 @@ function elearn_manager_dash_shortcode() {
         <li><a href="<?php echo esc_url(get_permalink(get_page_by_path('organisation-details'))); ?>">Manage Organisation</a></li>
         <li><a href="<?php echo esc_url(get_permalink(get_page_by_path('user-details'))); ?>">Manage Users</a></li>
         <li><a href="<?php echo esc_url(get_permalink(get_page_by_path('access-management'))); ?>">Manage Access</a></li>
+        <li><a href="<?php echo esc_url(get_permalink(get_page_by_path('reports'))); ?>">Reports</a></li>
     </ul>
 
     <div style="display:flex; gap:20px; align-items:flex-start; margin-top:20px;">
@@ -169,19 +156,14 @@ function elearn_manager_dash_shortcode() {
                                 <tr>
                                     <td><?php echo esc_html($user->display_name); ?></td>
                                     <?php foreach ($modules as $module) : ?>
-                                       <td>
+                                        <td>
                                             <?php
-                                                $user_id = $user->ID; // must match attempt.user_id
-                                                $module_id = $module->module_id; // must match attempt.module_module_id
+                                                $user_id = $user->ID;
+                                                $module_id = $module->module_id;
 
-                                                if (isset($attempt_lookup[$user_id][$module_id])) {
-                                                    // Get the timestamp from the database
-                                                    $attempt_time = $attempt_lookup[$user_id][$module_id];
-
-                                                    // Create a DateTime object
-                                                    $dt = new DateTime($attempt_time);
-
-                                                    // Format as d/m/Y h:i A (12-hour with AM/PM)
+                                                if (isset($cert_lookup[$user_id][$module_id])) {
+                                                    $cert_time = $cert_lookup[$user_id][$module_id];
+                                                    $dt = new DateTime($cert_time);
                                                     $value = $dt->format('d/m/Y h:i A');
                                                 } else {
                                                     $value = 'N/A';
@@ -190,13 +172,19 @@ function elearn_manager_dash_shortcode() {
                                                 echo esc_html($value);
                                             ?>
                                         </td>
-
                                     <?php endforeach; ?>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <?php foreach ($selected_user_ids as $uid) : ?>
+                        <input type="hidden" name="selected_users[]" value="<?php echo esc_attr($uid); ?>">
+                    <?php endforeach; ?>
+                    <input type="hidden" name="action" value="export_user_progress">
+                    <button type="submit" style="margin-top:10px;">Download CSV</button>
+                </form>
 
             <?php endif; ?>
         </div>
