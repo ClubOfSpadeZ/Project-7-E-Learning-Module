@@ -40,6 +40,9 @@ require_once ELEARN_PATH . 'pages/managers/manager-dash-access-management.php';
 
 // Student/User pages 
 require_once ELEARN_PATH . 'pages/users/user-register.php';
+require_once ELEARN_PATH . 'pages/users/user-module-dash.php';
+require_once ELEARN_PATH . 'pages/users/user-module-view.php';
+require_once ELEARN_PATH . 'pages/users/user-view-results.php';
 
 // Create custom user roles for elerning platform
 require_once ELEARN_PATH . 'roles.php';
@@ -51,7 +54,6 @@ function elearn_activate() {
     elearn_database_generator();
     elearn_add_student_role();
     elearn_add_manager_role();
-    elearn_add_rewrite_rules();
 
     flush_rewrite_rules();
 }
@@ -75,45 +77,6 @@ function elearn_init() {
     } );
 }
 add_action( 'plugins_loaded', 'elearn_init' );
-
-// Frontend router
-function elearn_frontend_router() {
-    if ( ! is_user_logged_in() ) {
-        wp_redirect( wp_login_url() );
-        exit;
-    }
-
-    $elearn_page = get_query_var('elearn_page');
-
-    switch ($elearn_page) {
-        case 'user-module-dash':
-            require_once ELEARN_PATH . 'pages/users/user-module-dash.php';
-            exit;
-        case 'user-module-view':
-            require_once ELEARN_PATH . 'pages/users/user-module-view.php';
-            exit;
-    }
-}
-add_action('template_redirect', 'elearn_frontend_router');
-
-
-// Add custom rewrite rule for dashboard
-function elearn_add_rewrite_rules() {
-    add_rewrite_rule(
-        '^dashboard/?$', // URL pattern
-        'index.php?elearn_page=user-module-dash',
-        'top'
-
-    );
-    
-    add_rewrite_rule(
-        '^view-module/?$', // URL pattern
-        'index.php?elearn_page=user-module-view', 
-        'top'
-    );
-    
-}
-add_action('init', 'elearn_add_rewrite_rules');
 
 // Register the query var
 function elearn_register_query_vars($vars) {
@@ -284,3 +247,39 @@ function elearn_handle_export_user_progress() {
     fclose($fp);
     exit;
 }
+
+// CSV export handler
+function elearn_export_personal_results() {
+    if (empty($_POST['modules']) || !is_array($_POST['modules'])) {
+        wp_die('No data to export.');
+    }
+
+    $user_name = sanitize_text_field($_POST['user_name']);
+    $filename = 'results_' . sanitize_title($user_name) . '_' . date('Y-m-d') . '.csv';
+
+    // Force file download headers
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=' . $filename);
+
+    $output = fopen('php://output', 'w');
+
+    // Column headers
+    fputcsv($output, ['Module Name', 'Attempts', 'Passed', 'Certificate Completion']);
+
+    // Loop over submitted data
+    foreach ($_POST['modules'] as $mod_name) {
+        $slug     = sanitize_title($mod_name);
+        $attempts = sanitize_text_field($_POST['attempts_' . $slug]);
+        $passed   = sanitize_text_field($_POST['passed_' . $slug]);
+        $cert     = sanitize_text_field($_POST['cert_time_' . $slug]);
+
+        fputcsv($output, [$mod_name, $attempts, $passed, $cert]);
+    }
+
+    fclose($output);
+    exit;
+}
+add_action('admin_post_export_personal_results', 'elearn_export_personal_results');
+add_action('admin_post_nopriv_export_personal_results', 'elearn_export_personal_results');
+
+
