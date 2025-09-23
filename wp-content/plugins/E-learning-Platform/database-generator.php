@@ -56,8 +56,10 @@ function elearn_database_generator() {
     $tables[] = "CREATE TABLE {$prefix}licence (
         licence_id BIGINT NOT NULL AUTO_INCREMENT,
         licence_name VARCHAR(45) NULL,
+        licence_description LONGTEXT NULL,
         user_amount VARCHAR(45) NULL,
         licence_cost VARCHAR(45) NULL,
+        licence_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
         PRIMARY KEY (licence_id)
     ) $charset_collate;";
 

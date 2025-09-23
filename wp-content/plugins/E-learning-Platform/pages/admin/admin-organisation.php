@@ -128,6 +128,8 @@ function elearn_organisation_page()
         }
     }
 
+    $results = $wpdb->get_results("SELECT * FROM $organisation_table");
+
     // Display the page
     echo '<div class="wrap">';
     echo '<h1>Organisations</h1>';
@@ -135,4 +137,42 @@ function elearn_organisation_page()
     echo '<button type="submit" name="create_organisation" class="button button-primary">Create Organisation</button>';
     echo '</form>';
     echo '</div>';
+
+     echo '<div class="wrap"><h1>Organisations Table</h1>';
+    if (!empty($results)) {
+        echo '<table class="widefat fixed" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>ABN</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>';
+        foreach ($results as $row) {
+            $edit_url = admin_url('admin.php?page=elearn-edit-organisation&organisation_id=' . urlencode($row->organisation_id));
+            $delete_url = admin_url('admin.php?page=elearn-organisation&action=delete&organisation_id=' . intval($row->organisation_id));
+               echo '<tr>
+                    <td>' . esc_html($row->organisation_id) . '</td>
+                    <td>' . esc_html($row->organisation_name) . '</td>
+                    <td>' . esc_html($row->organisation_address) . '</td>
+                    <td>' . esc_html($row->organisation_phone) . '</td>
+                    <td>' . esc_html($row->organisation_email) . '</td>
+                    <td>' . esc_html($row->organisation_abn) . '</td>
+                    <td>' . esc_html($row->organisation_created) . '</td>
+                    <td>
+                        <a href="' . esc_url($edit_url) . '" class="button">Edit</a>
+                        <a href="' . esc_url($delete_url) . '" class="button delete-organisation" style="color: red; border-color: red;" data-organisation-id="' . esc_attr($row->organisation_id) . '">Delete</a>
+                    </td>
+                </tr>';
+        }
+        echo '</tbody></table>';
+    echo '</div>';
+    } else {
+        echo '<p>No organisation data found.</p>';
+    }
 }
