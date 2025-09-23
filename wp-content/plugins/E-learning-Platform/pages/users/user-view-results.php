@@ -69,40 +69,107 @@ function elearn_view_results_shortcode() {
     // Now echo table once with final data
     ?>
     <style>
-        .elearn-results-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .elearn-results-table th, .elearn-results-table td {
-            border: 1px solid black;
-            padding: 5px;
-            text-align: left;
-            border-collapse: collapse;
-        }
-        
-        .elearn-results-table thead, .elearn-results-table tbody {
-            display: block;
-        }
-        .elearn-results-table tbody {
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            background-color: #f2f2f2;
-        }
-        .elearn-results-table thead {
-            width: calc(100% - 1em);  scrollbar width
-            box-sizing: border-box;
-            background-color: #ddd;
-        }
-        
-        .elearn-results-table thead tr, .elearn-results-table tbody tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
+    .page-id-547 .entry-title {
+        display: none;
+    }
+    /* Container around the table for scroll */
+    .elearn-results-table-container {
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border: 2px solid #666;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
 
+    /* Base table */
+    .elearn-results-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+        color: #333;
+    }
+
+    /* Sticky header */
+    .elearn-results-table thead {
+        position: sticky;
+        top: 0;
+        background: #666666; /* dark grey header */
+        color: #fff;
+        font-weight: 600;
+        z-index: 2;
+    }
+
+    /* Header & cell spacing with vertical + horizontal lines */
+    .elearn-results-table th,
+    .elearn-results-table td {
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd; /* horizontal lines */
+        border-right: 1px solid #ddd;  /* vertical lines */
+    }
+
+    /* Remove right border from last column */
+    .elearn-results-table th:last-child,
+    .elearn-results-table td:last-child {
+        border-right: none;
+    }
+
+    /* Column widths stay aligned */
+    .elearn-results-table thead tr,
+    .elearn-results-table tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    /* Row striping & hover */
+    .elearn-results-table tbody tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+    .elearn-results-table tbody tr:hover {
+        background: #eef6fb;
+    }
+
+    /* Back to Dashboard link */
+    #elearn-btn-back {
+       display: inline-block;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        background: #3498db;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+    #elearn-btn-back:hover {
+        background: #2c80b4;
+        transform: translateY(-2px);    
+    }
+
+    /* CSV button */
+    .elearn-results-btn {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 18px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: #3498db;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .elearn-results-btn:hover {
+        background: #2c80b4;
+    }
     </style>
-    <a href="<?php echo esc_url($dashboard_url); ?>">&larr; Back to Dashboard</a><br><br>
+
+
+    <a href="<?php echo esc_url($dashboard_url); ?>" id="elearn-btn-back">&larr; Back to Dashboard</a><br><br>
     <div class="elearn-view-results">
         <h2>Personal completion results for <?php echo esc_html ($username->display_name);?></h2>
     </div>
@@ -130,15 +197,15 @@ function elearn_view_results_shortcode() {
     </div>
     <!-- Export to CSV form -->
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-        <?php foreach ($modules_data as $mod_name => $data) : ?>
+        <?php foreach ($modules_data as $mod_name => $data) { ?>
             <input type="hidden" name="modules[]" value="<?php echo esc_attr($mod_name); ?>">
             <input type="hidden" name="attempts_<?php echo esc_attr(sanitize_title($mod_name)); ?>" value="<?php echo esc_attr($data['attempts']); ?>">
             <input type="hidden" name="passed_<?php echo esc_attr(sanitize_title($mod_name)); ?>" value="<?php echo esc_attr($data['passed']); ?>">
             <input type="hidden" name="cert_time_<?php echo esc_attr(sanitize_title($mod_name)); ?>" value="<?php echo esc_attr($data['cert_time']); ?>">
-        <?php endforeach; ?>
+        <?php } ?>
         <input type="hidden" name="user_name" value="<?php echo esc_attr($username->display_name); ?>">
         <input type="hidden" name="action" value="export_personal_results">
-        <button type="submit" style="margin-top:10px;">Download Results as CSV</button>
+        <button type="submit" class="elearn-results-btn">Download Results as CSV</button>
     </form>
     <?php
 

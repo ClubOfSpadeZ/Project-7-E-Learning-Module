@@ -39,7 +39,6 @@ require_once ELEARN_PATH . 'pages/admin/admin-licence-create.php';
 require_once ELEARN_PATH . 'pages/managers/manager-dashboard.php';
 require_once ELEARN_PATH . 'pages/managers/manager-dash-user-details.php';
 require_once ELEARN_PATH . 'pages/managers/manager-dash-org-details.php';
-require_once ELEARN_PATH . 'pages/managers/manager-dash-access-management.php';
 require_once ELEARN_PATH . 'pages/managers/manager-licence.php';
 
 // Student/User pages 

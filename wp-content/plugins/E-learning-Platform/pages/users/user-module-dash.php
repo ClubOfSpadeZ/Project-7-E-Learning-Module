@@ -23,42 +23,135 @@ function elearn_user_module_dash_shortcode() {
     $view_url = $view_page ? get_permalink($view_page->ID) : home_url('/');
 
     ?>
+    <style>
+        .page-id-542 .entry-title {
+            display: none;
+        }
+
+        /* Dashboard container */
+        .elearn-dashboard {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .elearn-dashboard h2,
+        .elearn-modules h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* View Results button */
+        .elearn-dashboard #view-results-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background: #3498db;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .elearn-dashboard #view-results-btn:hover {
+            background: #2c80b4;
+            transform: translateY(-2px);
+        }
+
+        /* Wrapper for the list of modules */
+        .module-list-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Each module card */
+        .module-item {
+            display: flex;
+            flex-direction: column;   
+            align-items: center;     
+            text-align: center;     
+            padding: 15px;
+            
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: inherit;
+            background: #f9f9f9;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            text-decoration: none;
+        }
+
+        /* Hover effect */
+        .module-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Module name */
+        .module-item h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin: 0 0 10px;
+        }
+
+        /* Thumbnail */
+        .module-item img {
+            max-width: 125px;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Description */
+        .module-item p {
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.4;
+            margin: 0;
+        }
+    </style>
+
+
     <div class="elearn-dashboard">
         <h2>Welcome to Your E-Learning Dashboard</h2>
-        <a href="<?php echo esc_url($view_url); ?>" class="button">View Results</a>
+        <a href="<?php echo esc_url($view_url); ?>" id="view-results-btn">📊 View Your Results</a>
     </div>
-
-    <br>
 
     <div class="elearn-modules">
         <h2>Available Modules</h2>
-        <ul>
-            <?php
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'elearn_module';
-            $results = $wpdb->get_results("SELECT * FROM $table_name");
+        <?php
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'elearn_module';
+        $results = $wpdb->get_results("SELECT * FROM $table_name");
 
-            if (!empty($results)) {
-                foreach ($results as $row) {
-                    $module_view_page = get_page_by_path('module-view');
-                    $module_view_url = $module_view_page ? get_permalink($module_view_page->ID) . '?module_id=' . intval($row->module_id) : '#';
-                    echo '<li><a href="' . esc_url($module_view_url) . '">'
-                        . esc_html($row->module_name) . ': '
-                        . esc_html($row->module_description)
-                        . '</a></li>';
+        if (!empty($results)) {
+            echo '<div class="module-list-wrapper">';
+            foreach ($results as $row) {
+                $module_view_page = get_page_by_path('module-view');
+                $module_view_url  = $module_view_page ? get_permalink($module_view_page->ID) . '?module_id=' . intval($row->module_id) : '#';
+
+                echo '<a href="' . esc_url($module_view_url) . '" class="module-item">
+                        <h3>' . esc_html($row->module_name) . '</h3>';
+
+                if (!empty($row->module_thumbnail_path)) {
+                    echo '<img src="' . esc_url($row->module_thumbnail_path) . '" 
+                              alt="' . esc_attr($row->module_name) . ' Thumbnail">';
                 }
-            } else {
-                echo '<p>No modules available at the moment.</p>';
+
+                echo '<p>' . esc_html($row->module_description) . '</p>
+                    </a>';
             }
-            ?>
-        </ul>
+            echo '</div>';
+        } else {
+            echo '<p style="text-align:center;">No modules available at the moment.</p>';
+        }
+        ?>
     </div>
     <?php
 
     return ob_get_clean(); // return the HTML
 }
 add_shortcode('user_module_dash', 'elearn_user_module_dash_shortcode');
-
-
-
-
