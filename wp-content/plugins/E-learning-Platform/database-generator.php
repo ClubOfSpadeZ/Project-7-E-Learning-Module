@@ -1,108 +1,5 @@
 <?php
 
-/*-----------------------maybe we change the format to as follows as it is easier to read and include foreign keys(will require changes in other files)-----------------------
-<?php
-function elearn_database_generator() {
-    global $wpdb;
-
-    $charset_collate = $wpdb->get_charset_collate();
-    $prefix = $wpdb->prefix . 'elearn_';
-
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    $tables = [];
-
-    $tables[] = "CREATE TABLE {$prefix}organisation (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        name VARCHAR(45) NULL,
-        abn VARCHAR(45) NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}attempt (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        attempt_time DATETIME NULL DEFAULT '0000-00-00 00:00:00',
-        score VARCHAR(45) NULL,
-        user_id BIGINT UNSIGNED NOT NULL,
-        module_id BIGINT NOT NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}certificate (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        completion DATETIME NULL,
-        attempt_id BIGINT UNSIGNED NOT NULL,
-        user_id BIGINT UNSIGNED NOT NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}module (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        name VARCHAR(45) NULL,
-        description LONGTEXT NULL,
-        created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
-        certificate_id BIGINT UNSIGNED NOT NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}question (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        type ENUM('multiple_choice', 'true_false', 'short_answer') NULL,
-        text LONGTEXT NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}licence (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        name VARCHAR(45) NULL,
-        user_amount INT NULL,
-        cost DECIMAL(10,2) NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}choice (
-        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        question_id BIGINT UNSIGNED NOT NULL,
-        data LONGTEXT NULL,
-        is_correct TINYINT NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}licences_in_organisation (
-        licence_id BIGINT UNSIGNED NOT NULL,
-        organisation_id BIGINT UNSIGNED NOT NULL,
-        PRIMARY KEY (licence_id, organisation_id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}content_in_modules (
-        module_id BIGINT UNSIGNED NOT NULL,
-        question_id BIGINT UNSIGNED NOT NULL,
-        PRIMARY KEY (module_id, question_id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}module_in_licence (
-        module_id BIGINT UNSIGNED NOT NULL,
-        licence_id BIGINT UNSIGNED NOT NULL,
-        PRIMARY KEY (module_id, licence_id)
-    ) $charset_collate;";
-
-    $tables[] = "CREATE TABLE {$prefix}access (
-        id INT AUTO_INCREMENT,
-        access_code VARCHAR(100) NOT NULL UNIQUE,
-        organisation_id BIGINT UNSIGNED NOT NULL,
-        is_used TINYINT(1) DEFAULT 0,
-        created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        used TIMESTAMP DEFAULT NULL,
-        PRIMARY KEY (id)
-    ) $charset_collate;";
-
-    foreach ($tables as $sql) {
-        dbDelta($sql);
-    }
-}
-*/
-
-
 function elearn_database_generator() {
     global $wpdb;
 
@@ -112,9 +9,13 @@ function elearn_database_generator() {
     $tables = [];
 
     $tables[] = "CREATE TABLE {$prefix}organisation (
-        organisation_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        organisation_id CHAR(20) NOT NULL,
         organisation_name VARCHAR(45) NULL,
+        organisation_address VARCHAR(255) NULL,
+        organisation_phone VARCHAR(45) NULL,
+        organisation_email VARCHAR(100) NULL,
         organisation_abn VARCHAR(45) NULL,
+        organisation_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
         PRIMARY KEY (organisation_id)
     ) $charset_collate;";
 
@@ -141,6 +42,7 @@ function elearn_database_generator() {
         module_description LONGTEXT NULL,
         module_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
         module_pdf_path VARCHAR(255) NULL,
+        module_thumbnail_path VARCHAR(255) NULL,
         certificate_id BIGINT NOT NULL,
         PRIMARY KEY (module_id)
     ) $charset_collate;";
@@ -155,8 +57,10 @@ function elearn_database_generator() {
     $tables[] = "CREATE TABLE {$prefix}licence (
         licence_id BIGINT NOT NULL AUTO_INCREMENT,
         licence_name VARCHAR(45) NULL,
+        licence_description LONGTEXT NULL,
         user_amount VARCHAR(45) NULL,
         licence_cost VARCHAR(45) NULL,
+        licence_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
         PRIMARY KEY (licence_id)
     ) $charset_collate;";
 

@@ -43,7 +43,8 @@ function elearn_module_page()
     $table_name = $wpdb->prefix . 'elearn_module';
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 
-    $dashboard_url = home_url('/dashboard');
+    $dashboard_page = get_page_by_path('user-module-dash');
+    $dashboard_url = $dashboard_page ? get_permalink($dashboard_page->ID) : home_url('/');
     $module_create_url = admin_url('admin.php?page=elearn-module-create');
     
     echo '<div class="wrap"><h1>Module Table</h1>';
@@ -59,7 +60,8 @@ function elearn_module_page()
                 </thead>
                 <tbody>';
         foreach ($results as $row) {
-            $module_view_url = home_url('/view-module').'?module_id='.intval($row->module_id);
+            $module_view_page = get_page_by_path('module-view');
+            $module_view_url = $module_view_page ? get_permalink($module_view_page->ID) . '?module_id=' . intval($row->module_id) : '#';
             $edit_url = admin_url('admin.php?page=elearn-edit-module&module_id=' . intval($row->module_id));
             $delete_url = admin_url('admin.php?page=elearn-module&action=delete&module_id=' . intval($row->module_id));
                echo '<tr>

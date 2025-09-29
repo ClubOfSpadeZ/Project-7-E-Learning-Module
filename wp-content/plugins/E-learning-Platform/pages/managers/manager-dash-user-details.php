@@ -21,9 +21,31 @@ add_action('init', 'elearn_manager_dash_user_details');
 
 function elearn_manager_dash_user_details_shortcode() {
     ob_start();
+    if ( ! is_user_logged_in() ) {
+        return '<p>You must be logged in to access this page.</p>';
+    }
 
+    $current_user = wp_get_current_user();
+    $allowed_roles = ['manager', 'administrator'];
+    if ( ! array_intersect( $allowed_roles, (array) $current_user->roles ) ) {
+        return '<p>You do not have permission to access this page.</p>';
+    }
+
+        // Get current manager's organisation_id from usermeta
+    $manager_org_id = get_user_meta($current_user->ID, 'organisation_id', true);
+
+    // Fallback: if no org_id found, set to 0 (so they see no users)
+    if (empty($manager_org_id)) {
+        $manager_org_id = 0;
+    }
+
+    // Load all users from the same organisation
+    $all_users = get_users([
+        'meta_key'   => 'organisation_id',
+        'meta_value' => $manager_org_id,
+    ]);
     // Fetch all users (optionally filter by role)
-    $users = get_users();
+    $users = $all_users;
 
     // Selected user ID from dropdown or form submission
     $selected_user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : 0;
