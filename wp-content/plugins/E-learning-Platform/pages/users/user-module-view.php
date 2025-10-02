@@ -24,6 +24,14 @@ add_action( 'init', 'elearn_create_module_view_page' );
 function elearn_module_view_shortcode() {
     $dashboard_page = get_page_by_path('user-module-dash');
     $dashboard_url  = $dashboard_page ? get_permalink($dashboard_page->ID) : home_url('/');
+    
+    $current_user = wp_get_current_user();
+    $user_roles   = (array) $current_user->roles;
+    if (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
+        return '<p>You do not have permission to access this page.</p>';
+    } elseif (!is_user_logged_in()) {
+        return '<p>Please log in to access modules.</p>';
+    }
 
     if (!isset($_GET['module_id'])) {
         return '<p>Invalid module ID or no module selected.</p>

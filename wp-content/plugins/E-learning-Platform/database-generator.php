@@ -43,7 +43,6 @@ function elearn_database_generator() {
         module_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',
         module_pdf_path VARCHAR(255) NULL,
         module_thumbnail_path VARCHAR(255) NULL,
-        certificate_id BIGINT NOT NULL,
         PRIMARY KEY (module_id)
     ) $charset_collate;";
 

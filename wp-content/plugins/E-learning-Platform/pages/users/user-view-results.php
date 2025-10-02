@@ -33,6 +33,13 @@ function elearn_view_results_shortcode() {
         ORDER BY m.module_id ASC", // optional default order
         $user_id
     ));
+
+    $user_roles   = (array) $username->roles;
+    if (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
+        return '<p>You do not have permission to access this page.</p>';
+    } elseif (!is_user_logged_in()) {
+        return '<p>Please log in to access your dashboard.</p>';
+    }
     
     ob_start();        
     //Display all modules with number of attempts, passed or not, most recent certificate completion time
@@ -49,7 +56,7 @@ function elearn_view_results_shortcode() {
                     'name'      => $mod_name,
                     'attempts'  => 0,
                     'passed'    => 'No',
-                    'cert_time' => 'No attempts yet'
+                    'cert_time' => 'No certificate yet'
                 ];
             }
 
