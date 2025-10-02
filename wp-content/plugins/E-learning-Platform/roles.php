@@ -25,3 +25,14 @@ function elearn_add_student_role() {
     );
 }
 
+function register_webpage_user_role() {
+    add_role(
+        'webpage_user',
+        'Webpage User',
+        [
+            'read' => true, // basic capability
+        ]
+    );
+}
+add_action('init', 'register_webpage_user_role');
+

@@ -241,7 +241,7 @@ function elearn_handle_export_user_progress() {
                 $dt = new DateTime($attempt_lookup[$user->ID][$module->module_id]);
                 $row[] = $dt->format('d/m/Y h:i A');
             } else {
-                $row[] = 'N/A';
+                $row[] = 'Not Completed';
             }
         }
         fputcsv($fp, $row);

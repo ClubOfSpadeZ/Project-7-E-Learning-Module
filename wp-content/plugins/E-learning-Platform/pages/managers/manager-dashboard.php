@@ -31,6 +31,11 @@ function elearn_manager_dash_shortcode() {
 
     $manager_org_id = get_user_meta($current_user->ID, 'organisation_id', true);
     if (empty($manager_org_id)) $manager_org_id = 0;
+    
+    $organisation_table = $wpdb->prefix . 'elearn_organisation';
+    $org_name = $wpdb->get_var(
+        $wpdb->prepare("SELECT organisation_name FROM $organisation_table WHERE organisation_id = %s", $manager_org_id)
+    );
 
     $all_users = get_users([
         'meta_key'   => 'organisation_id',
@@ -65,11 +70,16 @@ function elearn_manager_dash_shortcode() {
             }
         }
     }
+
     ?>
     
 <div class="manager-dashboard">
+
     <h1>Manager Dashboard</h1>
     <p>Welcome, <?php echo esc_html($current_user->display_name); ?>!</p>
+    <p><strong>Organisation:</strong> <?php echo esc_html($org_name ? $org_name : $manager_org_id); ?></p>
+    <p><strong>Organisation ID:</strong> <?php echo esc_html($manager_org_id); ?></p>
+    
 
     <ul>
         <li><a href="<?php echo esc_url(get_permalink(get_page_by_path('organisation-details'))); ?>">Manage Organisation</a></li>
@@ -136,14 +146,12 @@ function elearn_manager_dash_shortcode() {
                 <button type="button" id="apply-button" style="width:100%;">Apply</button>
             </div>
 
-
-
         </div>
 
         <!-- Right: Users × Modules Table -->
         <div style="flex:2; min-width:400px;">
             <h2>Users and Progress</h2>
-            <div style="overflow-x:auto;">
+            <div style="overflow-x:auto;  max-height: 700px;">
                 <table class="module-user-table" style="border:2px solid black; border-collapse:collapse; width:100%; text-align:center;">
                     <thead>
                         <tr id="table-header">
@@ -151,11 +159,18 @@ function elearn_manager_dash_shortcode() {
                             <!-- Module headers dynamically inserted -->
                         </tr>
                     </thead>
-                    <tbody id="module-user-tbody">
+                    <tbody id="module-user-tbody" >
                         <!-- Table rows dynamically inserted -->
                     </tbody>
                 </table>
             </div>
+
+            <!-- Download CSV Button Under Table -->
+            <form id="export-csv-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-top:15px;">
+                <input type="hidden" name="action" value="export_user_progress">
+                <div id="export-user-fields"></div> <!-- JS will populate this -->
+                <button type="submit" style="width:100%;">Download CSV</button>
+            </form>
         </div>
 
     </div>
@@ -196,6 +211,17 @@ function elearn_manager_dash_shortcode() {
             return sortSelect.value==='asc'? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
         });
         visible.forEach(item => item.parentNode.appendChild(item));
+
+        const noUsersDiv = document.getElementById('no-users-found');
+if(items[0].parentNode.id === 'users-list'){ // only for users list
+    noUsersDiv.style.display = visible.length === 0 ? 'block' : 'none';
+}
+
+const noModulesDiv = document.getElementById('no-modules-found');
+if(items[0].parentNode.id === 'modules-list'){ // only for modules list
+    noModulesDiv.style.display = visible.length === 0 ? 'block' : 'none';
+}
+
     }
         document.getElementById('apply-button').addEventListener('click', ()=>{
         const selectedUserIds = getSelectedValues(userItems);
@@ -299,8 +325,40 @@ function renderTable(selectedUsers, selectedModules){
     const initialModules = moduleItems.map(i=>{ return {value:i.querySelector('input').value, label:i.querySelector('.module-label-name').innerText}; });
     renderTable(initialUserIds, initialModules);
 
+
+    document.getElementById('export-csv-form').addEventListener('submit', function(e){
+    const container = document.getElementById('export-user-fields');
+    container.innerHTML = ''; // Clear previous inputs
+
+    // Find all checked user checkboxes
+    const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox'))
+                              .filter(cb => cb.checked)
+                              .map(cb => cb.value);
+
+    // Add a hidden input for each selected user
+    selectedUsers.forEach(uid => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'selected_users[]';
+        input.value = uid;
+        container.appendChild(input);
+    });
+});
+const selectedModules = Array.from(document.querySelectorAll('.module-checkbox'))
+                             .filter(cb => cb.checked)
+                             .map(cb => cb.value);
+
+selectedModules.forEach(mid => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'selected_modules[]';
+    input.value = mid;
+    container.appendChild(input);
+});
+
 })();
 </script>
+
 
 <?php
 return ob_get_clean();

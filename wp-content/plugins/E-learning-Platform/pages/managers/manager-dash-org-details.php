@@ -81,16 +81,32 @@ function elearn_manager_dash_org_details_shortcode() {
             }
         }
 
-        // Remove user from org
-        if (isset($_POST['remove_user_from_organisation'])) {
-            $user_id = intval($_POST['remove_user_id']);
-            if ($user_id) {
-                delete_user_meta($user_id, 'organisation_id');
-                $user = new WP_User($user_id);
-                $user->set_role('subscriber');
-                echo '<div class="updated"><p>User removed from organisation!</p></div>';
-            }
-        }
+        // Remove user from org - change user role to 'webpage_user' so they lose access to org content but are in the system
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['remove_user_from_organisation'])) {
+    $user_id = intval($_POST['remove_user_id']);
+    if ($user_id) {
+        $user = new WP_User($user_id);
+        $user->set_role('webpage_user');
+    }
+}
+
+if (isset($_POST['change_user_to_subscriber'])) {
+    $user_id_to_change = intval($_POST['change_user_id']);
+    if ($user_id_to_change) {
+        $user = new WP_User($user_id_to_change);
+        $user->set_role('student'); // Change back to student
+
+    }
+}
+
+    // Redirect to the same page to prevent form resubmission
+    wp_safe_redirect(add_query_arg([], get_permalink()));
+    exit; // important!
+}
+
     }
 
     // Fetch organisation users
@@ -142,35 +158,101 @@ function elearn_manager_dash_org_details_shortcode() {
         </form>
 
         <hr>
-        <!-- Organisation Users Table -->
-        <h2>Organisation Users</h2>
-        <table class="widefat fixed">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($organisation_users as $user) : ?>
-                <tr>
-                    <td><?php echo esc_html($user->ID); ?></td>
-                    <td><?php echo esc_html($user->display_name); ?></td>
-                    <td><?php echo esc_html($user->user_email); ?></td>
-                    <td><?php echo esc_html(implode(', ', $user->roles)); ?></td>
-                    <td>
-                        <form method="post" style="display:inline;">
-                            <input type="hidden" name="remove_user_id" value="<?php echo esc_attr($user->ID); ?>">
-                            <button type="submit" name="remove_user_from_organisation" style="color:red;">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
+<!-- Search bar -->
+<p>
+    <input type="text" id="org-user-search" placeholder="Search users..." 
+           style="padding:5px; width:100%; max-width:400px; margin-bottom:8px;">
+</p>
+
+<!-- Organisation Users Table -->
+<table id="org-users-table" style="border-collapse: collapse; width:100%; font-family:sans-serif;">
+    <thead>
+        <tr>
+            <th data-column="0" style="border:1px solid #ccc; padding:8px; background-color:#f0f0f0; cursor:pointer;">ID</th>
+            <th data-column="1" style="border:1px solid #ccc; padding:8px; background-color:#f0f0f0; cursor:pointer;">Name</th>
+            <th data-column="2" style="border:1px solid #ccc; padding:8px; background-color:#f0f0f0; cursor:pointer;">Email</th>
+            <th data-column="3" style="border:1px solid #ccc; padding:8px; background-color:#f0f0f0; cursor:pointer;">Role</th>
+            <th style="border:1px solid #ccc; padding:8px; background-color:#f0f0f0;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php 
+    $row_index = 0;
+    foreach ($organisation_users as $user) : 
+        $roles = $user->roles; 
+        $bg = ($row_index % 2 === 0) ? 'white' : '#fafafa';
+        $row_index++;
+    ?>
+        <tr style="background-color:<?php echo $bg; ?>; border:1px solid #ccc;">
+            <td style="border:1px solid #ccc; padding:8px;"><?php echo esc_html($user->ID); ?></td>
+            <td style="border:1px solid #ccc; padding:8px;"><?php echo esc_html($user->display_name); ?></td>
+            <td style="border:1px solid #ccc; padding:8px;"><?php echo esc_html($user->user_email); ?></td>
+            <td style="border:1px solid #ccc; padding:8px;"><?php echo esc_html(implode(', ', $roles)); ?></td>
+            <td style="border:1px solid #ccc; padding:8px;">
+                <?php if (in_array('webpage_user', $roles)) : ?>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="change_user_id" value="<?php echo esc_attr($user->ID); ?>">
+                        <button type="submit" name="change_user_to_subscriber" 
+                                style="padding:5px 10px; font-size:14px; min-width:150px; background-color:#dfd; color:green; cursor:pointer;">
+                            Grant Access
+                        </button>
+                    </form>
+                <?php else : ?>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="remove_user_id" value="<?php echo esc_attr($user->ID); ?>">
+                        <button type="submit" name="remove_user_from_organisation" 
+                                style="padding:5px 10px; font-size:14px; min-width:150px; background-color:#fdd; color:red; cursor:pointer;">
+                            Remove Access
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<script>
+(function(){
+    const table = document.getElementById('org-users-table');
+    const searchInput = document.getElementById('org-user-search');
+    const tbody = table.querySelector('tbody');
+    const headers = table.querySelectorAll('th[data-column]');
+
+    // Search
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        Array.from(tbody.rows).forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+    });
+
+    // Sorting
+    headers.forEach(header => {
+        let asc = true;
+        header.addEventListener('click', () => {
+            const colIndex = parseInt(header.dataset.column);
+            const rows = Array.from(tbody.rows).filter(r => r.style.display !== 'none');
+
+            rows.sort((a, b) => {
+                let aText = a.cells[colIndex].innerText.trim();
+                let bText = b.cells[colIndex].innerText.trim();
+                if (!isNaN(aText) && !isNaN(bText)) return asc ? aText - bText : bText - aText;
+                return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+
+            rows.forEach(r => tbody.appendChild(r));
+            asc = !asc;
+
+            // Reapply alternating row colors
+            rows.forEach((r,i)=> r.style.backgroundColor = (i%2===0 ? '#fff' : '#fafafa'));
+        });
+    });
+})();
+</script>
+
+
     </div>
     <?php
 
