@@ -140,22 +140,33 @@ function elearn_quiz_check() {
             $correct_answers[$row->question_id] = strtolower(trim($row->choice_data ?? ''));
         } else {
             if ($row->choice_correct) {
-                $correct_answers[$row->question_id] = $row->choice_id;
+                if (!isset($correct_answers[$row->question_id])) {
+                    $correct_answers[$row->question_id] = [];
+                }
+                $correct_answers[$row->question_id][] = intval($row->choice_id);
             }
         }
     }
 
     $score = 0;
     foreach ($answers as $qid => $ans) {
-        if (isset($correct_answers[$qid])) {
-            if (is_numeric($ans) && $ans == $correct_answers[$qid]) {
+        if (!isset($correct_answers[$qid])) {
+            continue; // No correct answer recorded
+        }
+        if (is_array($correct_answers[$qid])) {
+            // Multiple choice (user picks ONE, but DB may allow many correct)
+            if (in_array(intval($ans), $correct_answers[$qid], true)) {
                 $score++;
-            } elseif (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+            }
+        } else {
+            // Short answer
+            if (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+                $score++;
+            } elseif (is_numeric($ans) && intval($ans) === intval($correct_answers[$qid])) {
                 $score++;
             }
         }
     }
-
     wp_send_json_success(['score' => $score, 'total' => count($correct_answers)]);
 }
 
@@ -251,7 +262,7 @@ function elearn_handle_export_user_progress() {
                 $dt = new DateTime($attempt_lookup[$user->ID][$module->module_id]);
                 $row[] = $dt->format('d/m/Y h:i A');
             } else {
-                $row[] = 'N/A';
+                $row[] = 'Not Completed';
             }
         }
         fputcsv($fp, $row);
