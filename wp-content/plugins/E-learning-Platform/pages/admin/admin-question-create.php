@@ -22,7 +22,7 @@ function elearn_question_create_page() {
     // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['elearn_create_question'])) {
         $question_type = sanitize_text_field($_POST['question_type']);
-        $question_text = sanitize_textarea_field($_POST['question_text']);
+        $question_text = sanitize_textarea_field(wp_unslash($_POST['question_text']));
 
         // Insert the question into the database
         $wpdb->insert(

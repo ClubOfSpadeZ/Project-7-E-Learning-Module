@@ -74,7 +74,7 @@ function elearn_database_generator() {
 
     $tables[] = "CREATE TABLE {$prefix}licences_in_organisation (
         licence_licence_id BIGINT NOT NULL,
-        organisation_organisation_id BIGINT UNSIGNED NOT NULL,
+        organisation_organisation_id CHAR(20) NOT NULL,
         PRIMARY KEY (licence_licence_id, organisation_organisation_id)
     ) $charset_collate;";
 
@@ -93,7 +93,7 @@ function elearn_database_generator() {
     $tables[] = "CREATE TABLE {$prefix}access (
         access_id INT AUTO_INCREMENT,
         access_code VARCHAR(100) NOT NULL UNIQUE,
-        organisation_organisation_id BIGINT UNSIGNED NOT NULL,
+        organisation_organisation_id CHAR(20) NOT NULL,
         is_used TINYINT(1) DEFAULT 0,
         access_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         access_used TIMESTAMP DEFAULT NULL,

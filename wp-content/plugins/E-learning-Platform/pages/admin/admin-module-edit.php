@@ -15,7 +15,7 @@ add_action('admin_menu', 'elearn_add_edit_module_menu');
 
 function elearn_edit_module_page() {
     global $wpdb;
-    $module_table  = $wpdb->prefix . 'elearn_module';
+    $module_table = $wpdb->prefix . 'elearn_module';
     $content_table = $wpdb->prefix . 'elearn_content_in_modules';
     $question_table = $wpdb->prefix . 'elearn_question';
 
@@ -23,14 +23,14 @@ function elearn_edit_module_page() {
 
     // ---- Save logic ----
     if ($module_id && isset($_POST['save_module'])) {
-        $module_name        = sanitize_text_field($_POST['module_Name']);
-        $module_description = sanitize_textarea_field($_POST['module_Description']);
-        $module_pdf_path    = '';
+        $module_name = sanitize_text_field(wp_unslash($_POST['module_Name']));
+        $module_description = sanitize_textarea_field(wp_unslash($_POST['module_Description']));
+        $module_pdf_path = '';
         $module_thumbnail_path = '';
 
         if ($module_id) {
             $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_table WHERE module_id = %d", $module_id));
-            $module_pdf_path       = $module ? $module->module_pdf_path : '';
+            $module_pdf_path = $module ? $module->module_pdf_path : '';
             $module_thumbnail_path = $module ? $module->module_thumbnail_path : '';
         }
 

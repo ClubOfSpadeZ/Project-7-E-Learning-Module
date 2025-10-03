@@ -98,6 +98,16 @@ function elearn_settings_link( $links ) {
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'elearn_settings_link' );
 
 
+function my_add_access_code_field($output) {
+    $output .= '
+    <p>
+        <label for="organisation_access_code">Organisation Access Code</label><br>
+        <input type="text" name="organisation_access_code" id="organisation_access_code" required>
+    </p>';
+    return $output;
+}
+add_filter('wppb_extra_register_fields', 'my_add_access_code_field');
+
 // Server AJAX request to process quiz submission
 add_action('wp_ajax_check_quiz', 'elearn_quiz_check');
 add_action('wp_ajax_nopriv_check_quiz', 'elearn_quiz_check');
