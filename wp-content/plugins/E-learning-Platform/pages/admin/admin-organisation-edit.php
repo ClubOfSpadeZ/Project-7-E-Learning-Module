@@ -220,6 +220,7 @@ function elearn_edit_organisation_page()
                 $wpdb->prefix . 'elearn_access',
                 [
                     'access_code' => $access_code,
+                    'hash_code' => hash('sha256', $access_code),
                     'organisation_organisation_id' => $organisation_id,
                     'is_used' => 0,
                     'access_created' => current_time('mysql'),
@@ -227,6 +228,7 @@ function elearn_edit_organisation_page()
                 ],
                 [
                     '%s', // access_code
+                    '%s', // hash_code
                     '%s', // organisation_organisation_id
                     '%d', // is_used
                     '%s', // access_created

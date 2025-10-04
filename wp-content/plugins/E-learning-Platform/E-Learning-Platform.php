@@ -306,4 +306,68 @@ function elearn_export_personal_results() {
 add_action('admin_post_export_personal_results', 'elearn_export_personal_results');
 add_action('admin_post_nopriv_export_personal_results', 'elearn_export_personal_results');
 
+add_action('wp_ajax_verify_access_code', 'elearn_verify_access_code');
+add_action('wp_ajax_nopriv_verify_access_code', 'elearn_verify_access_code');
+
+function elearn_verify_access_code()
+{
+    // Ensure the user is logged in
+    if (!is_user_logged_in()) {
+        wp_send_json_error(['message' => 'You must be logged in to perform this action.']);
+        wp_die();
+    }
+
+    global $wpdb;
+
+    $current_user_id = get_current_user_id();
+    $current_user = new WP_User($current_user_id);
+
+    // Check if the user has the "administrator" role
+    if (in_array('administrator', $current_user->roles)) {
+        wp_send_json_error(['message' => 'Administrators cannot join an organisation.']);
+        wp_die();
+    }
+
+    $organisation_id = get_user_meta($current_user_id, 'organisation_id', true);
+
+    // Check if the user is already in an organisation
+    if (!empty($organisation_id)) {
+        wp_send_json_error(['message' => 'You are already part of an organisation.']);
+        wp_die();
+    }
+
+    // Get the hashed access code from the AJAX request
+    $hashed_access_code = sanitize_text_field($_POST['access_code']);
+
+    // Query the database for the hashed access code
+    $result = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT organisation_organisation_id, is_used FROM {$wpdb->prefix}elearn_access WHERE hash_code = %s",
+            $hashed_access_code
+        )
+    );
+
+    if ($result) {
+            // Add the user to the organisation
+            update_user_meta($current_user_id, 'organisation_id', $result->organisation_organisation_id);
+            $user = new WP_User($current_user_id);
+            $user->set_role('student');
+
+            // Mark the access code as used
+            $wpdb->update(
+                $wpdb->prefix . 'elearn_access',
+                ['is_used' => $result->is_used + 1, 'access_used' => current_time('mysql')],
+                ['hash_code' => $hashed_access_code],
+                ['%d', '%s'],
+                ['%s']
+            );
+
+            wp_send_json_success(['message' => 'You have successfully joined the organisation!']);
+    } else {
+        wp_send_json_error(['message' => 'Invalid access code. Please try again.']);
+    }
+
+    wp_die();
+}
+
 
