@@ -27,17 +27,7 @@ function elearn_module_view_shortcode() {
     
     $current_user = wp_get_current_user();
     $user_roles   = (array) $current_user->roles;
-    if (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
-        return '<p>You do not have permission to access this page.</p>';
-    } elseif (!is_user_logged_in()) {
-        return '<p>Please log in to access modules.</p>';
-    }
-
-    if (!isset($_GET['module_id'])) {
-        return '<p>Invalid module ID or no module selected.</p>
-                <a href="' . esc_url($dashboard_url) . '">&larr; Back to Dashboard</a>';
-    }
-
+    
     global $wpdb;
     $user_id   = get_current_user_id();
     $module_id = intval($_GET['module_id']);
@@ -48,9 +38,15 @@ function elearn_module_view_shortcode() {
     $choice_tbl      = $wpdb->prefix . 'elearn_choice';
 
     $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_tbl WHERE module_id = %d", $module_id));
-
-    if (!$module) {
-        return '<p>Module not found.</p>
+    //display content only for logged-in users with specific roles unless it is the Demo Module
+    if (!is_user_logged_in()) {
+        return '<p>Please log in to access modules.</p>
+                <a href="https://healthfitlearning.wp.local/login">&larr; Login</a>';                
+    } elseif (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles) && $module->module_name !== 'Demo Module') {
+        return '<p>You do not have permission to access this page.</p>
+                <a href="' . esc_url($dashboard_url) . '">&larr; Back to Dashboard</a>';
+    } elseif (!isset($_GET['module_id'])) {
+        return '<p>Invalid module ID or no module selected.</p>
                 <a href="' . esc_url($dashboard_url) . '">&larr; Back to Dashboard</a>';
     }
 
@@ -97,7 +93,7 @@ function elearn_module_view_shortcode() {
         margin: 0 auto 30px auto;
         text-align: center;
     }
-    .elearn-module-view embed {
+    .elearn-module-view iframe {
         width: 100%;
         height: 600px;
         margin-top: 15px;
@@ -181,7 +177,7 @@ function elearn_module_view_shortcode() {
         <h2><?php echo esc_html($module->module_name); ?></h2>
         <p><?php echo esc_html($module->module_description); ?></p>
         <p><strong>User:</strong> <?php echo esc_html(wp_get_current_user()->display_name); ?></p>
-        <embed src="<?php echo esc_url($module->module_pdf_path); ?>" type="application/pdf" />
+        <iframe src="<?php echo esc_url($module->module_pdf_path); ?>">This is where the learning content will be displayed</iframe>
     </div>
 
     <form id="elearnForm">
@@ -243,14 +239,16 @@ function elearn_module_view_shortcode() {
                 } else {
                     $('#quizResult').removeClass('pass').addClass('fail').html(`You scored ${score}/${total}. Please try again — 100% required to pass.`);
                 }
-
-                $.post('<?php echo admin_url('admin-ajax.php'); ?>', {
-                    action: 'log_attempt',
-                    module_id: <?php echo $module_id; ?>,
-                    score: score,
-                    total: total,
-                    quiz_nonce: '<?php echo wp_create_nonce('submit_quiz'); ?>'
-                });
+                // Log attempt if not the demo module
+                if ('<?php echo esc_js($module->module_name); ?>' !== 'Demo Module') {
+                    $.post('<?php echo admin_url('admin-ajax.php'); ?>', {
+                        action: 'log_attempt',
+                        module_id: <?php echo $module_id; ?>,
+                        score: score,
+                        total: total,
+                        quiz_nonce: '<?php echo wp_create_nonce('submit_quiz'); ?>'
+                    });
+                }
             });
         });
     });
