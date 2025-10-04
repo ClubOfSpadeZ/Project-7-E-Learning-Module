@@ -43,7 +43,7 @@ function elearn_module_page()
     $table_name = $wpdb->prefix . 'elearn_module';
     $results = $wpdb->get_results("SELECT * FROM $table_name");
 
-    $dashboard_page = get_page_by_path('user-module-dash');
+    $dashboard_page = get_page_by_path('module-dash');
     $dashboard_url = $dashboard_page ? get_permalink($dashboard_page->ID) : home_url('/');
     $module_create_url = admin_url('admin.php?page=elearn-module-create');
     

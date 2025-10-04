@@ -18,11 +18,18 @@ function elearn_create_module_view_page() {
 register_activation_hook( __FILE__, 'elearn_create_module_view_page' );
 add_action( 'init', 'elearn_create_module_view_page' );
 
+add_filter('the_title', function ($title, $id) {
+    if (is_page('module-view') && in_the_loop()) {
+        return ''; // Remove the title
+    }
+    return $title;
+}, 10, 2);
+
 /**
  * Shortcode: [module_view]
  */
 function elearn_module_view_shortcode() {
-    $dashboard_page = get_page_by_path('user-module-dash');
+    $dashboard_page = get_page_by_path('module-dash');
     $dashboard_url  = $dashboard_page ? get_permalink($dashboard_page->ID) : home_url('/');
     
     $current_user = wp_get_current_user();
@@ -85,9 +92,6 @@ function elearn_module_view_shortcode() {
     ob_start();
     ?>
     <style>
-    .page-id-544 .entry-title {
-        display: none;
-    }
     .elearn-module-view {
         max-width: 95%;
         margin: 0 auto 30px auto;

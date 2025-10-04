@@ -46,6 +46,7 @@ require_once ELEARN_PATH . 'pages/users/user-register.php';
 require_once ELEARN_PATH . 'pages/users/user-module-dash.php';
 require_once ELEARN_PATH . 'pages/users/user-module-view.php';
 require_once ELEARN_PATH . 'pages/users/user-view-results.php';
+require_once ELEARN_PATH . 'pages/users/user-cert-view.php';
 
 // Create custom user roles for elerning platform
 require_once ELEARN_PATH . 'roles.php';

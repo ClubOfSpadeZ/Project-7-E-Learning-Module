@@ -60,13 +60,26 @@ function elearn_manager_dash_shortcode() {
 
 
     $cert_table = $wpdb->prefix . 'elearn_certificate';
-    $certs = $wpdb->get_results("SELECT attempt_id, user_id, certificate_completion FROM {$cert_table}");
+    $certs = $wpdb->get_results("SELECT attempt_id, user_id, certificate_completion, certificate_id FROM {$cert_table}");
 
     $cert_lookup = [];
+    $cert_view_page = get_page_by_path('cert-view');
+    $cert_view_url = $cert_view_page ? get_permalink($cert_view_page->ID) : '#';
+
     foreach ($certs as $cert) {
         foreach ($attempts as $attempt) {
             if ($attempt->attempt_id == $cert->attempt_id) {
-                $cert_lookup[$attempt->user_id][$attempt->module_module_id] = $cert->certificate_completion;
+                $uid = $attempt->user_id;
+                $mid = $attempt->module_module_id;
+
+                $cert_lookup[$uid][$mid] = [
+                    'completed' => $cert->certificate_completion,
+                    'url' => add_query_arg([
+                        'module_id' => intval($mid),
+                        'cert_id'   => intval($cert->certificate_id),
+                        'user_id'   => intval($uid)
+                    ], $cert_view_url)
+                ];
             }
         }
     }
@@ -281,9 +294,15 @@ function renderTable(selectedUsers, selectedModules){
 
             // Certificate
             let certText = 'Not Completed';
-            if(certLookup[uidInt] && certLookup[uidInt][midInt]){
-                certText = new Date(certLookup[uidInt][midInt]).toLocaleString();
+            if (certLookup[uidInt] && certLookup[uidInt][midInt]) {
+                const certData = certLookup[uidInt][midInt];
+                if (certData.completed && certData.completed !== '0000-00-00 00:00:00') {
+                    certText = `<a href="${certData.url}" target="_blank">${certData.completed}</a>`;
+                } else {
+                    certText = 'In Progress';
+                }
             }
+
 
             // Attempts
             const attempts = (attemptCountLookup[uidInt] && attemptCountLookup[uidInt][midInt])
@@ -291,7 +310,7 @@ function renderTable(selectedUsers, selectedModules){
                                 : 0;
 
             // Display both stacked
-            td.innerText = `Certificate: ${certText}\nAttempts: ${attempts}`;
+            td.innerHTML = `Certificate: ${certText}\nAttempts: ${attempts}`;
             td.style.whiteSpace = 'pre-line';       // Allow line breaks
             td.style.border = '1px solid black';    // Add border
             td.style.padding = '4px';
