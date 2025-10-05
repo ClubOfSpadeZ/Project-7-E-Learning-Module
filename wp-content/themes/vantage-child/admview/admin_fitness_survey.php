@@ -96,19 +96,19 @@ get_header();
     <main id="main" class="site-main">
         <div class="entry-content">
             <?php
-            // Check if the current user has admin or contributor roles
+            // Check if the current user has admin or manager roles
             $current_user = wp_get_current_user();
-            if (in_array('administrator', (array)$current_user->roles) || in_array('contributor', (array)$current_user->roles)) {
+            if (in_array('administrator', (array)$current_user->roles) || in_array('manager', (array)$current_user->roles)) {
                 $current_user = wp_get_current_user();
                 $user_id = $current_user->ID;
                 $user_email_domain = substr(strrchr($current_user->user_email, "@"), 1);
 
                 if (current_user_can('manage_options')) {
                     // If the user is an admin, allow them to search for any user
-                    $users = get_users(array('role__in' => array('subscriber', 'contributor')));
+                    $users = get_users(array('role__in' => array('subscriber', 'manager')));
                 } else {
                     // If the user is not an admin, allow them to search for users with the same email domain
-                    $users = get_users(array('role__in' => array('subscriber', 'contributor'), 'search' => "*@$user_email_domain"));
+                    $users = get_users(array('role__in' => array('subscriber', 'manager'), 'search' => "*@$user_email_domain"));
                 }
                 if ($users) {
                     ?>

@@ -68,7 +68,7 @@ function elearn_question_create_page() {
                 "{$prefix}content_in_modules",
                 [
                     'question_question_id' => $question_id,
-                    'module_module_id' => intval(value: $module_id),
+                    'module_module_id' => intval($module_id),
                 ],
                 [
                     '%d', // question_id (integer)
