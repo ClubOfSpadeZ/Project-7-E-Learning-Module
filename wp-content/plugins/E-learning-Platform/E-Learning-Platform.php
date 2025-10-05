@@ -179,6 +179,18 @@ add_action('wp_enqueue_scripts', function() {
     ]);
 });
 
+// Enqueue CSS for admin pages
+function elearn_enqueue_admin_styles($hook) {
+    // Enqueue the CSS file for all admin pages
+    wp_enqueue_style(
+        'elearn-admin-styles', // Handle for the stylesheet
+        ELEARN_URL . 'pages/admin/adminlooksgood.css', // Path to the CSS file
+        [], // Dependencies (none in this case)
+        '1.0.0' // Version number
+    );
+}
+add_action('admin_enqueue_scripts', 'elearn_enqueue_admin_styles');
+
 // Log attempt + maybe certificate
 add_action('wp_ajax_log_attempt', 'elearn_log_attempt');
 add_action('wp_ajax_nopriv_log_attempt', 'elearn_log_attempt');
@@ -251,7 +263,7 @@ function elearn_handle_export_user_progress() {
     // Header row
     $header = ['User'];
     foreach ($modules as $module) {
-        $header[] = $module->module_name . ' (' . $module->module_id . ')';
+        $header[] = $module->module_name;
     }
     fputcsv($fp, $header);
 
