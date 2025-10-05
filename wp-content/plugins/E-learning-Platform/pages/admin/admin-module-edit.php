@@ -131,18 +131,23 @@ function elearn_edit_module_page() {
     $linked_ids = wp_list_pluck($linked_questions, 'question_id');
 
     // ---- Page Content ----
+    ob_start();
+    ?>
+    <div class="wrap">
+        <h1>Edit Module</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div class="container">
+                <div class="cell main" style="box-sizing: border-box;">
+                    <label for="module_Name">Module Name:</label><br>
+                    <input type="hidden" name="module_id" value="<?php echo intval($module_id); ?>">
+                    <input type="text" id="module_Name" name="module_Name" class="regular-text" value="<?php echo esc_attr($module->module_name); ?>"><br><br>
 
-    echo '<div class="wrap"><h1>Edit Module</h1></div>';
-    echo '<form method="post" enctype="multipart/form-data">
-            <label for="module_Name">Module Name:</label><br>
-            <input type="hidden" name="module_id" value="' . intval($module_id) . '">
-            <input type="text" id="module_Name" name="module_Name" class="regular-text" value="' . esc_attr($module->module_name) . '"><br><br>
+                    <label for="module_Description">Module Description:</label><br>
+                    <textarea id="module_Description" name="module_Description" class="regular-text" rows="5"><?php echo esc_textarea($module->module_description); ?></textarea><br><br>
 
-            <label for="module_Description">Module Description:</label><br>
-            <textarea id="module_Description" name="module_Description" class="regular-text" rows="5">' . esc_textarea($module->module_description) . '</textarea><br><br>
-
-            <label for="module_PDF">Upload PDF:</label><br>
-            <input type="file" id="module_PDF" name="module_PDF" accept=".pdf"><br><br>';
+                    <label for="module_PDF">Upload PDF:</label><br>
+                    <input type="file" id="module_PDF" name="module_PDF" accept=".pdf"><br><br>
+    <?php
 
     if (!empty($module->module_pdf_path)) {
         echo '<p>Current PDF: <a href="' . esc_url($module->module_pdf_path) . '" target="_blank">View PDF</a></p>';
@@ -155,7 +160,9 @@ function elearn_edit_module_page() {
         echo '<p>Current Thumbnail:<br><img src="' . esc_url($module->module_thumbnail_path) . '" style="max-width:200px; height:auto;"></p>';
     }
 
-    echo '<div class="wrap"><h2>Module Content</h2></div>';
+    echo '</div>';
+    echo '<div style="height: inherit; box-sizing: border-box; overflow-y: hidden;">';
+    echo '<h2>Module Content</h2>';
     
     // Build an array of linked question IDs
     $linked_ids = [];
@@ -163,9 +170,11 @@ function elearn_edit_module_page() {
         $linked_ids[$q->question_id] = true;
     }
 
-    echo '<label>Module Questions</label>';
-    echo '<table class="widefat fixed" cellspacing="0" style="width: auto;">
-            <thead>
+    echo '<label>Module Questions</label><br>';
+    echo '<input type="text" id="SearchBox" placeholder="Search questions..." style="margin-bottom: 10px; width: 25%; padding: 8px;">';
+    echo '<div style="height: inherit; overflow-y: auto;">';
+    echo '<table class="widefat fixed data" cellspacing="0">
+            <thead style="position: sticky; top: 0; z-index: 1; background: #fff; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
                 <tr>
                     <th>ID</th>
                     <th>Question Text</th>
@@ -213,7 +222,63 @@ function elearn_edit_module_page() {
         }
     }
 
-    echo '</tbody></table><br>';
-    echo '<input type="submit" name="save_module" class="button button-primary" value="Save All Changes">';
-    echo '</form>';
+    ?>
+                        </tbody></table><br>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" name="save_module" class="button button-primary" value="Save All Changes">
+        </form>
+    </div>
+    <script>
+        window.addEventListener('load', setGridHeight);
+        window.addEventListener('resize', setGridHeight);
+
+        function setGridHeight() {
+            const mainCell = document.querySelector('.cell.main');
+            const grid = document.querySelector('.container');
+            if (mainCell && grid) {
+                grid.style.height = mainCell.offsetHeight + 'px';
+            }
+        }
+
+        const textarea = document.querySelector('.main');
+
+        const observer = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                onTextareaHeightChange(entry.contentRect.height);
+            }
+        });
+
+        observer.observe(textarea);
+
+        function onTextareaHeightChange(newHeight) {
+            setTimeout(setGridHeight, 0);
+        }
+    </script>
+    <!-- search box -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchBox = document.getElementById("SearchBox");
+            const table = document.querySelector(".data"); // Select the table with the class "data"
+
+            searchBox.addEventListener("input", function() {
+                const query = searchBox.value.toLowerCase();
+
+                // Get all rows in the table body
+                const rows = table.querySelectorAll("tbody tr");
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll("td");
+                    const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+                    if (rowText.includes(query)) {
+                        row.style.display = ""; // Show the row
+                    } else {
+                        row.style.display = "none"; // Hide the row
+                    }
+                });
+            });
+        });
+    </script>
+    <?php
+    echo ob_get_clean();
 }

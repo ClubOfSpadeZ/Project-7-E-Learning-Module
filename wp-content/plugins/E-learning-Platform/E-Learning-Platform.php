@@ -363,12 +363,18 @@ function elearn_verify_access_code()
                 ['%s']
             );
 
-            wp_send_json_success(['message' => 'You have successfully joined the organisation!']);
+            // Get the URL of the user module dashboard page
+            $module_dash_page = get_page_by_path('module-dash');
+            $redirect_url = $module_dash_page ? get_permalink($module_dash_page->ID) : home_url('/');
+
+            // Send success response with redirect URL
+            wp_send_json_success([
+                'message' => 'You have successfully joined the organisation!',
+                'redirect_url' => $redirect_url,
+            ]);
     } else {
         wp_send_json_error(['message' => 'Invalid access code. Please try again.']);
     }
 
     wp_die();
 }
-
-
