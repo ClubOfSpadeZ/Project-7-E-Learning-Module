@@ -281,7 +281,7 @@ if ($access_code_count > 0) : ?>
                 <label style="display:block; margin-bottom:5px; font-weight:bold;">
                     <input type="checkbox" id="select-all-users"> Select All Users
                 </label>
-                <div id="users-list">
+                <div id="users-list" style =" text-align:left;">
                     <?php foreach ($all_users as $user) : 
                         $data_name  = esc_attr(strtolower($user->display_name));
                         $data_email = esc_attr(strtolower($user->user_email));
@@ -310,6 +310,7 @@ if ($access_code_count > 0) : ?>
                 </label>
                 <div id="modules-list">
                     <?php foreach ($modules as $module) : ?>
+                        <?php if ($module->module_name === "Demo Module") continue; ?>
                         <label class="module-item" data-name="<?php echo esc_attr(strtolower($module->module_name)); ?>" style="display:block; margin-bottom:5px;">
                             <input type="checkbox" class="module-checkbox" value="<?php echo esc_attr($module->module_id); ?>" checked>
                             <span class="module-label-name"><?php echo esc_html($module->module_name); ?></span>
