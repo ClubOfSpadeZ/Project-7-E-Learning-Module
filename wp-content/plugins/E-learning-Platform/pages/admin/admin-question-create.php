@@ -16,6 +16,7 @@ function elearn_question_create_page() {
     global $wpdb;
 
     $prefix = $wpdb->prefix . 'elearn_';
+    $module_table = $prefix . 'module';
     $question_table = $prefix . 'question';
     $choice_table = $prefix . 'choice';
 
@@ -60,6 +61,23 @@ function elearn_question_create_page() {
             }
         }
 
+        // Link the question to the selected modules
+        if (!empty($_POST['link_to_modules'])) {
+        foreach ($_POST['link_to_modules'] as $module_id) {
+            $wpdb->insert(
+                "{$prefix}content_in_modules",
+                [
+                    'question_question_id' => $question_id,
+                    'module_module_id' => intval(value: $module_id),
+                ],
+                [
+                    '%d', // question_id (integer)
+                    '%d', // module_id (integer)
+                ]
+            );
+        }
+}
+
         if ($wpdb->last_error) {
             echo '<div class="notice notice-error"><p>Error: ' . esc_html($wpdb->last_error) . '</p></div>';
         } else {
@@ -67,47 +85,98 @@ function elearn_question_create_page() {
         }
     }
 
-    echo '<div class="wrap">';
-    echo '<h1>Create Question</h1>';
+    // Query all modules from the database
+    $modules = $wpdb->get_results("SELECT * FROM {$module_table}");
 
-    // Question form
-    echo '<form method="POST" action="" id="question-form">';
-    echo '<label for="question_type">Question Type</label>';
-    echo '<br>';
-    echo '<select name="question_type" id="question_type" class="regular-text" required>';
-    echo '<option value="">Select a type</option>';
-    echo '<option value="multiple_choice">Multiple Choice</option>';
-    echo '<option value="true_false">True/False</option>';
-    echo '<option value="short_answer">Short Answer</option>';
-    echo '</select>';
-    echo '<br><br>';
-    echo '<label for="question_text">Question Text</label>';
-    echo '<br>';
-    echo '<textarea name="question_text" id="question_text" rows="5" cols="50" class="regular-text" required></textarea>';
-    echo '<br>';
-    echo '<h1>Choices</h1>';
-    echo '<div id="choices-container">';
-    echo '<div class="choice-item gap">';
-    echo '<br>';
-    echo '<input type="text" name="choices[]" placeholder="Enter choice" class="regular-text" required>';
-    echo '<label>';
-    echo '<input type="checkbox" name="is_correct[]" value="1"> Correct ';
-    echo '</label>';
-    echo '<button type="button" class="button remove-choice-button">Remove</button>';
-    echo '</div>';
-    echo '</div>';
-    echo '<br>';
-    echo '<button type="button" id="add-choice-button" class="button">Add Choice</button>';
-    echo '<br><br>';
-    echo '<p class="submit">';
-    echo '<button type="submit" name="elearn_create_question" class="button button-primary">Create Question</button>';
-    echo '</p>';
-    echo '</form>';
+    // Fetch the module IDs linked to the last created question
+    $linked_modules = [];
+    if (isset($question_id)) {
+        $linked_modules = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT module_module_id FROM {$prefix}content_in_modules WHERE question_question_id = %d",
+                $question_id
+            )
+        );
+    }   
 
-    echo '</div>';
+    ob_start();
+    ?>
+    <div class="wrap">
+        <h1>Create Question</h1>
+        <form method="POST" action="" id="question-form">
+        <div class="container">
+            <!-- Question form -->
+            <div>
+                <label for="question_type">Question Type</label>
+                <br>
+                <select name="question_type" id="question_type" class="regular-text" required>
+                    <option value="">Select a type</option>
+                    <option value="multiple_choice">Multiple Choice</option>
+                    <option value="true_false">True/False</option>
+                    <option value="short_answer">Short Answer</option>
+                </select>
+                <br><br>
+                <label for="question_text">Question Text</label>
+                <br>
+                <textarea name="question_text" id="question_text" rows="5" cols="50" class="regular-text" required></textarea>
+                <br>
+                <h1>Choices</h1>
+                <div id="choices-container">
+                    <div class="choice-item gap">
+                        <br>
+                        <input type="text" name="choices[]" placeholder="Enter choice" class="regular-text" required>
+                        <label>
+                            <input type="checkbox" name="is_correct[]" value="1">Correct
+                        </label>
+                        <button type="button" class="button remove-choice-button">Remove</button>
+                    </div>
+                </div>
+                <br>
+                <button type="button" id="add-choice-button" class="button">Add Choice</button>
+                <br><br>
+            </div>
+            <div>
+                <h2>All Modules</h2>
+                <input type="text" id="SearchBox" placeholder="Search modules..." style="margin-bottom: 10px; width: 25%; padding: 8px;">
+                <table class="widefat fixed data">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Module Name</th>
+                            <th>Description</th>
+                            <th>Linking To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($modules)) : ?>
+                            <?php foreach ($modules as $module) : ?>
+                                <tr>
+                                    <td><?php echo esc_html($module->module_id); ?></td>
+                                    <td><?php echo esc_html($module->module_name); ?></td>
+                                    <td><?php echo esc_html($module->module_description); ?></td>
+                                    <td>
+                                        <input type="checkbox" name="link_to_modules[]" value="<?php echo esc_attr($module->module_id); ?>"
+                                        <?php echo in_array($module->module_id, $linked_modules) ? 'checked' : ''; ?>>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <tr>
+                                <td colspan="4">No modules found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="submit">
+            <button type="submit" name="elearn_create_question" class="button button-primary">Create Question</button>
+        </p>
+        </form>
+    </div>
 
-    // Add JavaScript for dynamic choice addition and removal
-    echo '<script>
+    <!-- Add JavaScript for dynamic choice addition and removal -->
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const addChoiceButton = document.getElementById("add-choice-button");
             const choicesContainer = document.getElementById("choices-container");
@@ -137,5 +206,30 @@ function elearn_question_create_page() {
                 }
             });
         });
-    </script>';
+    </script>
+    <!-- search box -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchBox = document.getElementById("SearchBox");
+            const table = document.querySelector(".data"); // Select the table with the class "data"
+
+            searchBox.addEventListener("input", function() {
+                const query = searchBox.value.toLowerCase();
+
+                // Get all rows in the table body
+                const rows = table.querySelectorAll("tbody tr");
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll("td");
+                    const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+                    if (rowText.includes(query)) {
+                        row.style.display = ""; // Show the row
+                    } else {
+                        row.style.display = "none"; // Hide the row
+                    }
+                });
+            });
+        });
+    </script>
+    <?php
+    echo ob_get_clean();
 }

@@ -13,18 +13,6 @@ function elearn_add_edit_organisation_menu()
 }
 add_action('admin_menu', 'elearn_add_edit_organisation_menu');
 
-function elearn_enqueue_admin_styles($hook)
-{
-    // Check if we are on the specific admin page
-    wp_enqueue_style(
-        'elearn-admin-styles', // Handle for the stylesheet
-        plugin_dir_url(__FILE__) . 'adminlooksgood.css', // Path to the CSS file
-        [],
-        '1.0.0' // Version number
-    );
-}
-add_action('admin_enqueue_scripts', 'elearn_enqueue_admin_styles');
-
 function elearn_edit_organisation_page()
 {
     global $wpdb;

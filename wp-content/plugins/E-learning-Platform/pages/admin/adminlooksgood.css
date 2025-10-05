@@ -1,7 +1,9 @@
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    align-items: start;
     gap: 20px;
+    grid-auto-rows: minmax(auto, max-content);
 }
 
 table.userdata {

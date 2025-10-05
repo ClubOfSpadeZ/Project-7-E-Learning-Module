@@ -72,7 +72,7 @@ function elearn_user_register_shortcode()
             console.log('Hashed Access Code:', hashedAccessCodeHex); // Debugging
 
             // Send the hashed access code via AJAX
-            const response = await fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+            const response = await fetch(elearnQuiz.ajaxurl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -87,8 +87,8 @@ function elearn_user_register_shortcode()
             console.log('Server Response:', result); // Debugging
 
             if (result.success) {
-                alert('You have successfully joined the organisation!');
-                location.reload(); // Reload the page to reflect changes
+                alert(result.data.message);
+                window.location.href = result.data.redirect_url; // Redirect to the module dashboard
             } else {
                 alert(result.data.message);
             }

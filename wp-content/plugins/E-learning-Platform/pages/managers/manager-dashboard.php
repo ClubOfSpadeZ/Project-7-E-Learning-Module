@@ -282,27 +282,24 @@ function elearn_manager_dash_shortcode()
                     <option value="desc">Sort Z–A</option>
                 </select>
 
-                <div style="max-height:200px; overflow-y:auto; border:1px solid #ccc; padding:10px;"
-                    id="users-list-wrapper">
-                    <label style="display:block; margin-bottom:5px; font-weight:bold;">
-                        <input type="checkbox" id="select-all-users"> Select All Users
-                    </label>
-                    <div id="users-list">
-                        <?php foreach ($all_users as $user):
-                            $data_name = esc_attr(strtolower($user->display_name));
-                            $data_email = esc_attr(strtolower($user->user_email));
-                            ?>
-                            <label class="user-item" data-name="<?php echo $data_name; ?>"
-                                data-email="<?php echo $data_email; ?>" style="display:block; margin-bottom:5px;">
-                                <input type="checkbox" class="user-checkbox" value="<?php echo esc_attr($user->ID); ?>" checked>
-                                <span class="user-label-name"><?php echo esc_html($user->display_name); ?></span>
-                                <span class="user-label-email" style="color:#666; font-size:0.9em;">
-                                    &lt;<?php echo esc_html($user->user_email); ?>&gt;</span>
-                            </label>
-                        <?php endforeach; ?>
-                    </div>
-                    <div id="no-users-found" style="display:none; margin-top:8px; color:#b00;">No users found.</div>
+            <div style="max-height:200px; overflow-y:auto; border:1px solid #ccc; padding:10px;" id="users-list-wrapper">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">
+                    <input type="checkbox" id="select-all-users"> Select All Users
+                </label>
+                <div id="users-list" style =" text-align:left;">
+                    <?php foreach ($all_users as $user) : 
+                        $data_name  = esc_attr(strtolower($user->display_name));
+                        $data_email = esc_attr(strtolower($user->user_email));
+                    ?>
+                        <label class="user-item" data-name="<?php echo $data_name; ?>" data-email="<?php echo $data_email; ?>" style="display:block; margin-bottom:5px;">
+                            <input type="checkbox" class="user-checkbox" value="<?php echo esc_attr($user->ID); ?>" checked>
+                            <span class="user-label-name"><?php echo esc_html($user->display_name); ?></span>
+                            <span class="user-label-email" style="color:#666; font-size:0.9em;"> &lt;<?php echo esc_html($user->user_email); ?>&gt;</span>
+                        </label>
+                    <?php endforeach; ?>
                 </div>
+                <div id="no-users-found" style="display:none; margin-top:8px; color:#b00;">No users found.</div>
+            </div>
 
                 <!-- Module Selection -->
                 <h2 style="margin-top:20px;">Select Modules</h2>
@@ -313,23 +310,21 @@ function elearn_manager_dash_shortcode()
                     <option value="desc">Sort Z–A</option>
                 </select>
 
-                <div style="max-height:200px; overflow-y:auto; border:1px solid #ccc; padding:10px;"
-                    id="modules-list-wrapper">
-                    <label style="display:block; margin-bottom:5px; font-weight:bold;">
-                        <input type="checkbox" id="select-all-modules" checked> Select All Modules
-                    </label>
-                    <div id="modules-list">
-                        <?php foreach ($modules as $module): ?>
-                            <label class="module-item" data-name="<?php echo esc_attr(strtolower($module->module_name)); ?>"
-                                style="display:block; margin-bottom:5px;">
-                                <input type="checkbox" class="module-checkbox"
-                                    value="<?php echo esc_attr($module->module_id); ?>" checked>
-                                <span class="module-label-name"><?php echo esc_html($module->module_name); ?></span>
-                            </label>
-                        <?php endforeach; ?>
-                    </div>
-                    <div id="no-modules-found" style="display:none; margin-top:8px; color:#b00;">No modules found.</div>
+            <div style="max-height:200px; overflow-y:auto; border:1px solid #ccc; padding:10px;" id="modules-list-wrapper">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">
+                    <input type="checkbox" id="select-all-modules" checked> Select All Modules
+                </label>
+                <div id="modules-list">
+                    <?php foreach ($modules as $module) : ?>
+                        <?php if ($module->module_name === "Demo Module") continue; ?>
+                        <label class="module-item" data-name="<?php echo esc_attr(strtolower($module->module_name)); ?>" style="display:block; margin-bottom:5px;">
+                            <input type="checkbox" class="module-checkbox" value="<?php echo esc_attr($module->module_id); ?>" checked>
+                            <span class="module-label-name"><?php echo esc_html($module->module_name); ?></span>
+                        </label>
+                    <?php endforeach; ?>
                 </div>
+                <div id="no-modules-found" style="display:none; margin-top:8px; color:#b00;">No modules found.</div>
+            </div>
 
                 <!-- Apply Button -->
                 <div id="apply-form-wrapper" style="margin-top:6px;">
