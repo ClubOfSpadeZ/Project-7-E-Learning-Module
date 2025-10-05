@@ -85,14 +85,19 @@ function elearn_edit_organisation_page()
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user_to_organisation'])) {
         $user_id_to_add = intval($_POST['add_user_id']);
         if ($user_id_to_add) {
-            // Update the user's organisation_id metadata
-            update_user_meta($user_id_to_add, 'organisation_id', $organisation_id);
-
-            // Update the user's role to "student"
+            // Check if the user has the "administrator" role
             $user = new WP_User($user_id_to_add);
-            $user->set_role('student');
+            if (in_array('administrator', $user->roles)) {
+                echo '<div class="notice notice-error"><p>Administrators cannot be added to an organisation.</p></div>';
+            } else {
+                // Update the user's organisation_id metadata
+                update_user_meta($user_id_to_add, 'organisation_id', $organisation_id);
 
-            echo '<div class="notice notice-success"><p>User added to the organisation successfully and role updated to "student"!</p></div>';
+                // Update the user's role to "student"
+                $user->set_role('student');
+
+                echo '<div class="notice notice-success"><p>User added to the organisation successfully and role updated to "student"!</p></div>';
+            }
         }
     }
 
@@ -123,6 +128,8 @@ function elearn_edit_organisation_page()
     // Display the form
     echo '<div class="wrap">';
     echo '<h1>Edit Organisation</h1>';
+    echo '<div class="container">';
+    echo '<div>';
     echo '<form method="POST" action="">';
     echo '<table class="form-table">';
     echo '<tr>';
@@ -165,13 +172,123 @@ function elearn_edit_organisation_page()
     echo '</form>';
 
     echo '<input type="text" id="userSearchBox" placeholder="Search users..." style="margin-bottom: 10px; width: 20%; padding: 8px;">';
+    echo '</div>';
+
+    echo '<div>';
+    $access_code_count = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}elearn_access WHERE organisation_organisation_id = %s",
+            $organisation_id
+        )
+    );
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_access_code'])) {
+        $result = $wpdb->delete(
+            $wpdb->prefix . 'elearn_access',
+            ['organisation_organisation_id' => $organisation_id],
+            ['%s']
+        );
+
+        if ($result !== false) {
+            echo '<div class="notice notice-success"><p>Access code removed successfully!</p></div>';
+        } else {
+            echo '<div class="notice notice-error"><p>Failed to remove access code: ' . esc_html($wpdb->last_error) . '</p></div>';
+        }
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_access_code'])) {
+        if ($access_code_count > 0) {
+            echo '<div class="notice notice-error"><p>An access code already exists for this organisation. Please remove the existing code before creating a new one.</p></div>';
+        } else {
+            // Generate a unique access code
+            $access_code = wp_generate_password(12, false); // Generate a 12-character alphanumeric code
+
+            // Insert the access code into the database
+            $result = $wpdb->insert(
+                $wpdb->prefix . 'elearn_access',
+                [
+                    'access_code' => $access_code,
+                    'hash_code' => hash('sha256', $access_code),
+                    'organisation_organisation_id' => $organisation_id,
+                    'is_used' => 0,
+                    'access_created' => current_time('mysql'),
+                    'access_used' => null,
+                ],
+                [
+                    '%s', // access_code
+                    '%s', // hash_code
+                    '%s', // organisation_organisation_id
+                    '%d', // is_used
+                    '%s', // access_created
+                    '%s', // access_used
+                ]
+            );
+
+            if ($result !== false) {
+                echo '<div class="notice notice-success"><p>Access code generated successfully: <strong>' . esc_html($access_code) . '</strong></p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>Failed to generate access code: ' . esc_html($wpdb->last_error) . '</p></div>';
+            }
+        }
+    }
+
+    $access_codes = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT access_id, access_code, is_used, access_created, access_used 
+            FROM {$wpdb->prefix}elearn_access 
+            WHERE organisation_organisation_id = %s",
+            $organisation_id
+        )
+    );
+
+    echo '<h2>Access Codes</h2>';
+    if (!empty($access_codes)) {
+        echo '<table class="widefat fixed" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Access Code</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Used</th>
+                    </tr>
+                </thead>
+                <tbody>';
+        foreach ($access_codes as $code) {
+            echo '<tr>
+                    <td>' . esc_html($code->access_id) . '</td>
+                    <td>' . esc_html($code->access_code) . '</td>
+                    <td>' . ($code->is_used ? 'Used' : 'Unused') . '</td>
+                    <td>' . esc_html($code->access_created) . '</td>
+                    <td>' . ($code->access_used ? esc_html($code->access_used) : 'N/A') . '</td>
+                </tr>';
+        }
+        echo '</tbody></table>';
+    } else {
+        echo '<p>No access codes found for this organisation.</p>';
+    }
+    
+    if ($access_code_count > 0) {
+    // Display the "Remove Access Code" button
+    echo '<form method="POST" action="" style="margin-top: 20px;">
+            <button type="submit" name="remove_access_code" class="button button-secondary" style="color: red; border-color: red;">Remove Access Code</button>
+          </form>';
+    } else {
+        // Display the "Generate Access Code" button
+        echo '<form method="POST" action="" style="margin-top: 20px;">
+                <button type="submit" name="create_access_code" class="button button-primary">Generate Access Code</button>
+            </form>';
+    }
+    echo '</div>';
 
     $organisation_users = $wpdb->get_results("SELECT user_id, display_name, user_email FROM " . $wpdb->prefix . "usermeta
                                         INNER JOIN " . $wpdb->prefix . "users ON " . $wpdb->prefix . "usermeta.user_id = " . $wpdb->prefix . "users.ID
                                         WHERE meta_key = 'organisation_id' AND meta_value = '$organisation_id';");
 
+    echo '<div>';
+    echo '<h2>Organisation Users</h2>';
     if (!empty($organisation_users)) {
-        echo '<table class="widefat fixed" cellspacing="0">
+        echo '<table class="widefat fixed userdata" cellspacing="0">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -202,13 +319,16 @@ function elearn_edit_organisation_page()
     } else {
         echo '<p>No organisation data found.</p>';
     }
+    echo '</div>';
 
     $users = $wpdb->get_results("SELECT ID, display_name, user_email FROM " . $wpdb->prefix . "users
                                     WHERE ID NOT IN (SELECT user_id FROM " . $wpdb->prefix . "usermeta
                                     WHERE meta_key = 'organisation_id' AND meta_value = '$organisation_id');");
 
+    echo '<div>';
+    echo '<h2>Existing Website Users</h2>';
     if (!empty($users)) {
-        echo '<table class="widefat fixed" cellspacing="0">
+        echo '<table class="widefat fixed userdata" cellspacing="0">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -238,19 +358,19 @@ function elearn_edit_organisation_page()
     } else {
         echo '<p>No User data found.</p>';
     }
-
     echo '</div>';
+    echo '</div></div>';
 
     echo '<script>
             document.addEventListener("DOMContentLoaded", function() {
                 const searchBox = document.getElementById("userSearchBox");
-                const userTables = document.querySelectorAll(".widefat");
+                const userTables = document.querySelectorAll(".userdata"); // Select all tables with the class "userdata"
 
                 searchBox.addEventListener("input", function() {
                     const query = searchBox.value.toLowerCase();
 
-                    userTables.forEach(table => {
-                        const rows = table.querySelectorAll("tbody tr");
+                    userTables.forEach(userTable => {
+                        const rows = userTable.querySelectorAll("tbody tr");
                         rows.forEach(row => {
                             const cells = row.querySelectorAll("td");
                             const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(" ");

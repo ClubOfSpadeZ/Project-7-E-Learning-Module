@@ -1,5 +1,5 @@
 <?php
-// Make sure this is running inside WordPress
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 function elearn_manager_dash_user_details() {
     $page_title = 'User Details';
@@ -31,106 +31,98 @@ function elearn_manager_dash_user_details_shortcode() {
         return '<p>You do not have permission to access this page.</p>';
     }
 
-        // Get current manager's organisation_id from usermeta
     $manager_org_id = get_user_meta($current_user->ID, 'organisation_id', true);
+    if (empty($manager_org_id)) $manager_org_id = 0;
 
-    // Fallback: if no org_id found, set to 0 (so they see no users)
-    if (empty($manager_org_id)) {
-        $manager_org_id = 0;
-    }
-
-    // Load all users from the same organisation
     $all_users = get_users([
         'meta_key'   => 'organisation_id',
         'meta_value' => $manager_org_id,
     ]);
-    // Fetch all users (optionally filter by role)
-    $users = $all_users;
-
-    // Selected user ID from dropdown or form submission
-    $selected_user_id = !empty($_POST['user_id']) ? intval($_POST['user_id']) : 0;
-    $selected_user = $selected_user_id ? get_userdata($selected_user_id) : null;
-
-    // Handle form submission for updates
-    if ( isset($_POST['update_user_nonce']) && wp_verify_nonce($_POST['update_user_nonce'], 'update_user_action') ) {
-        if ( current_user_can('edit_users') && $selected_user ) {
-            $userdata = array('ID' => $selected_user_id);
-
-            if ( isset($_POST['display_name']) ) $userdata['display_name'] = sanitize_text_field($_POST['display_name']);
-            if ( isset($_POST['user_email']) && is_email($_POST['user_email']) ) $userdata['user_email'] = sanitize_email($_POST['user_email']);
-            if ( isset($_POST['user_login']) ) $userdata['user_login'] = sanitize_user($_POST['user_login'], true);
-
-            wp_update_user($userdata);
-
-            echo '<div class="updated"><p>User updated successfully!</p></div>';
-
-            // Refresh selected user after update
-            $selected_user = get_userdata($selected_user_id);
-        }
-    }
-
     ?>
 
-    <div class="user-details">
-        <h1>User Details</h1>
+    <div class="user-details" style="display:flex; gap:20px;">
+        
+        <!-- Left column: search + user list -->
+        <div style="flex:1; min-width:250px; max-width:300px;">
+            <h2>Users</h2>
+            <input id="user-search-input" type="text" 
+                   placeholder="Search by name or email..." 
+                   style="margin-bottom:8px; padding:5px; width:100%;">
 
-        <!-- User selection dropdown -->
-        <form method="post">
-            <label for="user_id">Select a user:</label><br>
-            <select name="user_id" id="user_id" onchange="this.form.submit()">
-                <option value="">-- Select User --</option>
-                <?php foreach ( $users as $user ) : ?>
-                    <option value="<?php echo esc_attr($user->ID); ?>" <?php selected($selected_user_id, $user->ID); ?>>
-                        <?php echo esc_html($user->display_name . ' (' . $user->user_email . ')'); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </form>
+            <div id="users-list-wrapper" 
+                 style="max-height:500px; overflow-y:auto; border:1px solid #ccc; padding:10px;">
+                <div id="users-list">
+                    <?php foreach ($all_users as $user) :
+                        $data_name = esc_attr(strtolower($user->display_name));
+                    ?>
+                        <div class="user-item" 
+                             data-id="<?php echo esc_attr($user->ID); ?>"
+                             data-name="<?php echo $data_name; ?>"
+                             data-email="<?php echo esc_attr(strtolower($user->user_email)); ?>"
+                             data-login="<?php echo esc_attr($user->user_login); ?>"
+                             data-roles="<?php echo esc_attr(implode(', ', $user->roles)); ?>"
+                             data-registered="<?php echo esc_attr($user->user_registered); ?>"
+                             style="padding:5px; border-bottom:1px solid #eee; cursor:pointer;">
+                            <strong><?php echo esc_html($user->display_name); ?></strong> 
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div id="no-users-found" style="display:none; margin-top:8px; color:#b00;">
+                    No users found.
+                </div>
+            </div>
+        </div>
 
-        <!-- Display selected user details -->
-        <?php if ( $selected_user ) : ?>
-            <h2>Details for <?php echo esc_html($selected_user->display_name); ?></h2>
-            <ul>
-                <li><strong>Username:</strong> <?php echo esc_html($selected_user->user_login); ?></li>
-                <li><strong>Display Name:</strong> <?php echo esc_html($selected_user->display_name); ?></li>
-                <li><strong>Email:</strong> <?php echo esc_html($selected_user->user_email); ?></li>
-                <li><strong>Role(s):</strong> <?php echo esc_html(implode(', ', $selected_user->roles)); ?></li>
-                <li><strong>Registered On:</strong> <?php echo esc_html($selected_user->user_registered); ?></li>
-            </ul>
+        <!-- Right column: selected user details -->
+        <div id="selected-user-details" style="flex:2; min-width:300px; border:1px solid #ddd; padding:15px;">
+            <h2>Select a user to view details</h2>
+        </div>
 
-            <!-- Edit button -->
-            <button type="button" onclick="document.getElementById('edit-form').style.display='block'; this.style.display='none';">
-                Edit User
-            </button>
-
-            <!-- Edit form (hidden by default) -->
-            <form method="post" id="edit-form" style="display:none; margin-top:15px;">
-                <?php wp_nonce_field('update_user_action', 'update_user_nonce'); ?>
-                <input type="hidden" name="user_id" value="<?php echo esc_attr($selected_user->ID); ?>">
-
-                <p>
-                    <label for="user_login">Username:</label><br>
-                    <input type="text" name="user_login" value="<?php echo esc_attr($selected_user->user_login); ?>" required>
-                </p>
-
-                <p>
-                    <label for="display_name">Display Name:</label><br>
-                    <input type="text" name="display_name" value="<?php echo esc_attr($selected_user->display_name); ?>" required>
-                </p>
-
-                <p>
-                    <label for="user_email">Email:</label><br>
-                    <input type="email" name="user_email" value="<?php echo esc_attr($selected_user->user_email); ?>" required>
-                </p>
-
-                <p>
-                    <button type="submit">Save Changes</button>
-                </p>
-            </form>
-        <?php endif; ?>
     </div>
 
-    <?php
-    return ob_get_clean();
+<script>
+(function(){
+    const searchInput = document.getElementById('user-search-input');
+    const users = Array.from(document.querySelectorAll('.user-item'));
+    const noUsers = document.getElementById('no-users-found');
+    const detailsDiv = document.getElementById('selected-user-details');
+
+    function renderDetails(userId){
+        const user = users.find(u => u.dataset.id === userId);
+        if(!user) return;
+
+        detailsDiv.innerHTML = `
+            <h2>Details for ${user.querySelector('strong').innerText}</h2>
+            <ul>
+                <li><strong>Username:</strong> ${user.dataset.login}</li>
+                <li><strong>Display Name:</strong> ${user.querySelector('strong').innerText}</li>
+                <li><strong>Email:</strong> ${user.dataset.email}</li>
+                <li><strong>Role(s):</strong> ${user.dataset.roles}</li>
+                <li><strong>Registered On:</strong> ${user.dataset.registered}</li>
+            </ul>
+        `;
+    }
+
+    searchInput.addEventListener('input', ()=>{
+        const q = searchInput.value.toLowerCase();
+        let visible = 0;
+        users.forEach(u=>{
+            const name = u.dataset.name;
+            const email = u.dataset.email;
+            const match = name.includes(q) || email.includes(q);
+            u.style.display = match ? 'block' : 'none';
+            if(match) visible++;
+        });
+        noUsers.style.display = visible===0 ? 'block' : 'none';
+    });
+
+    users.forEach(u=>{
+        u.addEventListener('click', ()=> renderDetails(u.dataset.id));
+    });
+})();
+</script>
+
+<?php
+return ob_get_clean();
 }
 add_shortcode('user_details', 'elearn_manager_dash_user_details_shortcode');

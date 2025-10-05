@@ -22,8 +22,8 @@ function elearn_module_create_page() {
 
     // Handle form submission
     if (isset($_POST['save_module'])) {
-        $module_name = sanitize_text_field($_POST['module_Name']);
-        $module_description = sanitize_textarea_field($_POST['module_Description']);
+        $module_name = sanitize_text_field(wp_unslash($_POST['module_Name']));
+        $module_description = sanitize_textarea_field(wp_unslash($_POST['module_Description']));
         $linked_questions = isset($_POST['linked_questions']) ? array_map('intval', $_POST['linked_questions']) : [];
         $module_pdf_path = '';
 

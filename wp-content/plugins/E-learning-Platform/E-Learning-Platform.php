@@ -46,6 +46,7 @@ require_once ELEARN_PATH . 'pages/users/user-register.php';
 require_once ELEARN_PATH . 'pages/users/user-module-dash.php';
 require_once ELEARN_PATH . 'pages/users/user-module-view.php';
 require_once ELEARN_PATH . 'pages/users/user-view-results.php';
+require_once ELEARN_PATH . 'pages/users/user-cert-view.php';
 
 // Create custom user roles for elerning platform
 require_once ELEARN_PATH . 'roles.php';
@@ -98,6 +99,16 @@ function elearn_settings_link( $links ) {
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'elearn_settings_link' );
 
 
+function my_add_access_code_field($output) {
+    $output .= '
+    <p>
+        <label for="organisation_access_code">Organisation Access Code</label><br>
+        <input type="text" name="organisation_access_code" id="organisation_access_code" required>
+    </p>';
+    return $output;
+}
+add_filter('wppb_extra_register_fields', 'my_add_access_code_field');
+
 // Server AJAX request to process quiz submission
 add_action('wp_ajax_check_quiz', 'elearn_quiz_check');
 add_action('wp_ajax_nopriv_check_quiz', 'elearn_quiz_check');
@@ -130,22 +141,33 @@ function elearn_quiz_check() {
             $correct_answers[$row->question_id] = strtolower(trim($row->choice_data ?? ''));
         } else {
             if ($row->choice_correct) {
-                $correct_answers[$row->question_id] = $row->choice_id;
+                if (!isset($correct_answers[$row->question_id])) {
+                    $correct_answers[$row->question_id] = [];
+                }
+                $correct_answers[$row->question_id][] = intval($row->choice_id);
             }
         }
     }
 
     $score = 0;
     foreach ($answers as $qid => $ans) {
-        if (isset($correct_answers[$qid])) {
-            if (is_numeric($ans) && $ans == $correct_answers[$qid]) {
+        if (!isset($correct_answers[$qid])) {
+            continue; // No correct answer recorded
+        }
+        if (is_array($correct_answers[$qid])) {
+            // Multiple choice (user picks ONE, but DB may allow many correct)
+            if (in_array(intval($ans), $correct_answers[$qid], true)) {
                 $score++;
-            } elseif (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+            }
+        } else {
+            // Short answer
+            if (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+                $score++;
+            } elseif (is_numeric($ans) && intval($ans) === intval($correct_answers[$qid])) {
                 $score++;
             }
         }
     }
-
     wp_send_json_success(['score' => $score, 'total' => count($correct_answers)]);
 }
 
@@ -241,7 +263,7 @@ function elearn_handle_export_user_progress() {
                 $dt = new DateTime($attempt_lookup[$user->ID][$module->module_id]);
                 $row[] = $dt->format('d/m/Y h:i A');
             } else {
-                $row[] = 'N/A';
+                $row[] = 'Not Completed';
             }
         }
         fputcsv($fp, $row);
@@ -285,4 +307,74 @@ function elearn_export_personal_results() {
 add_action('admin_post_export_personal_results', 'elearn_export_personal_results');
 add_action('admin_post_nopriv_export_personal_results', 'elearn_export_personal_results');
 
+add_action('wp_ajax_verify_access_code', 'elearn_verify_access_code');
+add_action('wp_ajax_nopriv_verify_access_code', 'elearn_verify_access_code');
 
+function elearn_verify_access_code()
+{
+    // Ensure the user is logged in
+    if (!is_user_logged_in()) {
+        wp_send_json_error(['message' => 'You must be logged in to perform this action.']);
+        wp_die();
+    }
+
+    global $wpdb;
+
+    $current_user_id = get_current_user_id();
+    $current_user = new WP_User($current_user_id);
+
+    // Check if the user has the "administrator" role
+    if (in_array('administrator', $current_user->roles)) {
+        wp_send_json_error(['message' => 'Administrators cannot join an organisation.']);
+        wp_die();
+    }
+
+    $organisation_id = get_user_meta($current_user_id, 'organisation_id', true);
+
+    // Check if the user is already in an organisation
+    if (!empty($organisation_id)) {
+        wp_send_json_error(['message' => 'You are already part of an organisation.']);
+        wp_die();
+    }
+
+    // Get the hashed access code from the AJAX request
+    $hashed_access_code = sanitize_text_field($_POST['access_code']);
+
+    // Query the database for the hashed access code
+    $result = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT organisation_organisation_id, is_used FROM {$wpdb->prefix}elearn_access WHERE hash_code = %s",
+            $hashed_access_code
+        )
+    );
+
+    if ($result) {
+            // Add the user to the organisation
+            update_user_meta($current_user_id, 'organisation_id', $result->organisation_organisation_id);
+            $user = new WP_User($current_user_id);
+            $user->set_role('student');
+
+            // Mark the access code as used
+            $wpdb->update(
+                $wpdb->prefix . 'elearn_access',
+                ['is_used' => $result->is_used + 1, 'access_used' => current_time('mysql')],
+                ['hash_code' => $hashed_access_code],
+                ['%d', '%s'],
+                ['%s']
+            );
+
+            // Get the URL of the user module dashboard page
+            $module_dash_page = get_page_by_path('module-dash');
+            $redirect_url = $module_dash_page ? get_permalink($module_dash_page->ID) : home_url('/');
+
+            // Send success response with redirect URL
+            wp_send_json_success([
+                'message' => 'You have successfully joined the organisation!',
+                'redirect_url' => $redirect_url,
+            ]);
+    } else {
+        wp_send_json_error(['message' => 'Invalid access code. Please try again.']);
+    }
+
+    wp_die();
+}
