@@ -263,7 +263,7 @@ function elearn_handle_export_user_progress() {
     // Header row
     $header = ['User'];
     foreach ($modules as $module) {
-        $header[] = $module->module_name . ' (' . $module->module_id . ')';
+        $header[] = $module->module_name;
     }
     fputcsv($fp, $header);
 
