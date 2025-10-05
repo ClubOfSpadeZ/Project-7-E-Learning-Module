@@ -50,21 +50,18 @@ function elearn_manager_dash_org_details_shortcode() {
         // Update organisation
         if (isset($_POST['elearn_edit_organisation'])) {
             $wpdb->update(
-                $organisation_table,
-                [
-                    'organisation_name'    => sanitize_text_field($_POST['organisation_name']),
-                    'organisation_address' => sanitize_text_field($_POST['organisation_address']),
-                    'organisation_phone'   => sanitize_text_field($_POST['organisation_phone']),
-                    'organisation_email'   => sanitize_email($_POST['organisation_email']),
-                    'organisation_abn'     => sanitize_text_field($_POST['organisation_abn']),
-                ],
-                ['organisation_id' => $organisation_id],
-                ['%s','%s','%s','%s','%s'],
-                ['%s'] // <- use string placeholder here
-            );
+                    $organisation_table,
+                    [
+                        'organisation_name'    => sanitize_text_field($_POST['organisation_name']),
+                        'organisation_address' => sanitize_text_field($_POST['organisation_address']),
+                        'organisation_phone'   => filter_var($_POST['organisation_phone'], FILTER_SANITIZE_NUMBER_INT),
+                        'organisation_email'   => sanitize_email($_POST['organisation_email']),
+                        'organisation_abn'   => filter_var($_POST['organisation_abn'], FILTER_SANITIZE_NUMBER_INT)
+                    ],
+                    ['organisation_id' => $organisation_id],
+                    ['%s','%s','%s','%s','%s']
+                );
 
-
-            echo '<div class="updated"><p>Organisation updated successfully!</p></div>';
             $organisation = $wpdb->get_row(
                 $wpdb->prepare("SELECT * FROM $organisation_table WHERE organisation_id = %s", $organisation_id)
             );
@@ -77,14 +74,11 @@ function elearn_manager_dash_org_details_shortcode() {
                 update_user_meta($user_id, 'organisation_id', $organisation_id);
                 $user = new WP_User($user_id);
                 $user->set_role('student');
-                echo '<div class="updated"><p>User added to organisation!</p></div>';
             }
         }
 
         // Remove user from org - change user role to 'webpage_user' so they lose access to org content but are in the system
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['remove_user_from_organisation'])) {
     $user_id = intval($_POST['remove_user_id']);
     if ($user_id) {
@@ -105,7 +99,6 @@ if (isset($_POST['change_user_to_subscriber'])) {
     // Redirect to the same page to prevent form resubmission
     wp_safe_redirect(add_query_arg([], get_permalink()));
     exit; // important!
-}
 
     }
 
@@ -129,33 +122,36 @@ if (isset($_POST['change_user_to_subscriber'])) {
 
     ?>
     <div class="organisation-details">
-        <h1>Organisation Details: <?php echo esc_html($organisation->organisation_name); ?></h1>
+        <h1><?php echo esc_html($organisation->organisation_name); ?></h1>
         <!-- Organisation Edit Form -->
-        <form method="post">
-            <table class="form-table">
-                <tr>
-                    <th>Name</th>
-                    <td><input type="text" name="organisation_name" value="<?php echo esc_attr($organisation->organisation_name); ?>" required></td>
-                </tr>
-                <tr>
-                    <th>Address</th>
-                    <td><input type="text" name="organisation_address" value="<?php echo esc_attr($organisation->organisation_address); ?>"></td>
-                </tr>
-                <tr>
-                    <th>Phone</th>
-                    <td><input type="text" name="organisation_phone" value="<?php echo esc_attr($organisation->organisation_phone); ?>"></td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td><input type="email" name="organisation_email" value="<?php echo esc_attr($organisation->organisation_email); ?>"></td>
-                </tr>
-                <tr>
-                    <th>ABN</th>
-                    <td><input type="text" name="organisation_abn" value="<?php echo esc_attr($organisation->organisation_abn); ?>"></td>
-                </tr>
-            </table>
-            <p><button type="submit" name="elearn_edit_organisation" class="button button-primary">Save Changes</button></p>
-        </form>
+        <form id="organisationForm" method="post">
+    <table class="form-table">
+        <tr>
+            <th>Name</th>
+            <td><input type="text" id="organisation_name" name="organisation_name" value="<?php echo esc_attr($organisation->organisation_name); ?>" required></td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td><input type="text" id="organisation_address" name="organisation_address" value="<?php echo esc_attr($organisation->organisation_address); ?>"></td>
+        </tr>
+        <tr>
+            <th>Phone</th>
+            <td><input type="text" id="organisation_phone" name="organisation_phone" value="<?php echo esc_attr($organisation->organisation_phone); ?>"></td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td><input type="email" id="organisation_email" name="organisation_email" value="<?php echo esc_attr($organisation->organisation_email); ?>"></td>
+        </tr>
+        <tr>
+            <th>ABN</th>
+            <td><input type="text" id="organisation_abn" name="organisation_abn" value="<?php echo esc_attr($organisation->organisation_abn); ?>"></td>
+        </tr>
+    </table>
+    <p><button type="submit" name="elearn_edit_organisation" class="button button-primary">Save Changes</button></p>
+</form>
+
+<div id="organisationResponse"></div>
+
 
         <hr>
 <!-- Search bar -->
@@ -250,6 +246,49 @@ if (isset($_POST['change_user_to_subscriber'])) {
         });
     });
 })();
+
+document.getElementById('organisationForm').addEventListener('submit', function(e) {
+    let errors = [];
+    const name = document.getElementById('organisation_name').value.trim();
+    const address = document.getElementById('organisation_address').value.trim();
+    const phone = document.getElementById('organisation_phone').value.trim();
+    const email = document.getElementById('organisation_email').value.trim();
+    const abn = document.getElementById('organisation_abn').value.trim();
+
+    // Clear previous styles
+    this.querySelectorAll('input').forEach(input => input.style.borderColor = '');
+
+    // Basic validation
+    if(name === '') {
+        errors.push('Name is required.');
+        document.getElementById('organisation_name').style.borderColor = 'red';
+    }
+
+    if(address === '') {
+        errors.push('Address is required.');
+        document.getElementById('organisation_address').style.borderColor = 'red';
+    }
+
+    if(phone === '' || !/^\d+$/.test(phone)) {
+        errors.push('Phone must be numbers only.');
+        document.getElementById('organisation_phone').style.borderColor = 'red';
+    }
+
+    if(email === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.push('Email is invalid.');
+        document.getElementById('organisation_email').style.borderColor = 'red';
+    }
+
+    if(abn === '' || !/^\d+$/.test(abn)) {
+        errors.push('ABN must be numbers only.');
+        document.getElementById('organisation_abn').style.borderColor = 'red';
+    }
+
+    if(errors.length > 0) {
+        e.preventDefault(); // stop form submission
+        document.getElementById('organisationResponse').innerHTML = errors.map(err => `<div style="color:red">${err}</div>`).join('');
+    }
+});
 </script>
 
 

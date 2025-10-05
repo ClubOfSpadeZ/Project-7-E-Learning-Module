@@ -99,6 +99,171 @@ function elearn_manager_dash_shortcode() {
         <li><a href="<?php echo esc_url(get_permalink(get_page_by_path('user-details'))); ?>">Manage Users</a></li>
     </ul>
 
+<?php
+//generate access Code for organisation
+
+$organisation_id = isset($_GET['organisation_id']) ? sanitize_text_field($_GET['organisation_id']) : '';
+
+// Access Code Management
+$access_code_count = $wpdb->get_var(
+    $wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->prefix}elearn_access WHERE organisation_organisation_id = %s",
+        $organisation_id
+    )
+);
+
+// Handle removing access codes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_access_code'])) {
+    $result = $wpdb->delete(
+        $wpdb->prefix . 'elearn_access',
+        ['organisation_organisation_id' => $organisation_id],
+        ['%s']
+    );
+
+    if ($result !== false) {
+        ?>
+        <!-- <div class="notice notice-success"><p>Access code removed successfully!</p></div> -->
+        
+        <?php
+    } else {
+        ?>
+        <div class="notice notice-error">
+            <!-- <p>Failed to remove access code: <?php echo esc_html($wpdb->last_error); ?></p> -->
+        </div>
+        <?php
+    }
+}
+
+// Handle creating a new access code
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_access_code'])) {
+    if ($access_code_count > 0) {
+        ?>
+        <div class="notice notice-error">
+            <!-- <p>An access code already exists for this organisation. Please remove the existing code before creating a new one.</p> -->
+        </div>
+        <?php
+    } else {
+        // Generate a unique access code
+        $access_code = wp_generate_password(12, false); // 12-character alphanumeric code
+
+        // Insert into database
+        $result = $wpdb->insert(
+            $wpdb->prefix . 'elearn_access',
+            [
+                'access_code' => $access_code,
+                'hash_code' => hash('sha256', $access_code),
+                'organisation_organisation_id' => $organisation_id,
+                'is_used' => 0,
+                'access_created' => current_time('mysql'),
+                'access_used' => null,
+            ],
+            [
+                '%s', // access_code
+                '%s', // hash_code
+                '%s', // organisation_organisation_id
+                '%d', // is_used
+                '%s', // access_created
+                '%s', // access_used
+            ]
+        );
+
+        if ($result !== false) {
+            ?>
+            <div class="notice notice-success">
+                <!-- <p>Access code generated successfully: <strong><?php echo esc_html($access_code); ?></strong></p> -->
+            </div>
+            <?php
+        } else {
+            ?>
+            <div class="notice notice-error">
+                <!-- <p>Failed to generate access code: <?php echo esc_html($wpdb->last_error); ?></p> -->
+            </div>
+            <?php
+        }
+    }
+}
+
+// Fetch access codes for this organisation
+$access_codes = $wpdb->get_results(
+    $wpdb->prepare(
+        "SELECT access_id, access_code, is_used, access_created, access_used 
+        FROM {$wpdb->prefix}elearn_access 
+        WHERE organisation_organisation_id = %s",
+        $organisation_id
+    )
+);
+?>
+
+<h2>Access Code</h2>
+
+<?php if (!empty($access_codes)) : ?>
+    <table class="widefat fixed" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Access Code</th>
+                <th>Created</th>
+                <th>Used By:</th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php foreach ($access_codes as $code) : ?>
+        <tr>
+            <td><?php echo esc_html($code->access_code); ?></td>
+            <td><?php echo esc_html($code->access_created); ?></td>
+            <td><?php echo $code->access_used ? esc_html($code->access_used) : '0'; ?></td>
+            <td>
+                <?php
+                // Prepare mailto link
+                $subject = urlencode("Access Code");
+                $body    = urlencode("Please use the following access code to register: " . $code->access_code);
+                $mailto  = 'mailto:?subject=' . $subject . '&body=' . $body;
+                ?>
+                <a href="<?php echo esc_attr($mailto); ?>" 
+                   style="padding:6px 12px; background-color:#0073aa; color:#fff; text-decoration:none; border-radius:3px; display:inline-block;">
+                    Email Access Code
+                </a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</tbody>
+
+    </table>
+<?php else : ?>
+    <p>No access codes found for this organisation.</p>
+<?php endif; ?>
+<?php 
+// After creating or removing a code
+$access_code_count = $wpdb->get_var(
+    $wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->prefix}elearn_access WHERE organisation_organisation_id = %s",
+        $organisation_id
+    )
+);
+
+
+if ($access_code_count > 0) : ?>
+    <!-- Remove Access Code Button (shown if a code exists) -->
+    <form method="POST" style="margin-top: 20px; display:inline-block;">
+        <button type="submit" name="remove_access_code" 
+                class="button button-secondary" 
+                style="color: red; border-color: red; padding:5px 15px;">
+            Remove Access Code
+        </button>
+    </form>
+<?php else : ?>
+    <!-- Generate Access Code Button (shown if no code exists) -->
+    <form method="POST" style="margin-top: 20px; display:inline-block;">
+        <button type="submit" name="create_access_code" 
+                class="button button-primary" 
+                style="padding:5px 15px;">
+            Generate Access Code
+        </button>
+    </form>
+<?php endif; ?>
+
+
+
+<!-- Dashboard -->
     <div style="display:flex; gap:20px; align-items:flex-start; margin-top:20px;">
 
         <!-- Left Sidebar: User & Module Selection -->
