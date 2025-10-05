@@ -76,19 +76,18 @@ function elearn_cert_shortcode() {
     //get organisation name
     $organisation_id = trim(get_user_meta($user_id, 'organisation_id', true));
     $organisation_name = 'No Organisation';
-    if ($organisation_id !== '' && is_numeric($organisation_id)) {
+    if (!empty($organisation_id)) {
         $organisation_row = $wpdb->get_row($wpdb->prepare(
             "SELECT organisation_name 
             FROM $organisation_tbl
-            WHERE organisation_id = %d",
-            (int) $organisation_id
+            WHERE organisation_id = %s",
+            $organisation_id
         ));
-
         if (!empty($organisation_row->organisation_name)) {
             $organisation_name = esc_html($organisation_row->organisation_name);
-        }
+        };
     }
-    
+
     ob_start();
     ?>
     <style>
@@ -152,11 +151,19 @@ function elearn_cert_shortcode() {
         }
 
     </style>
+
+      <?php 
+    //get user name from user_id in URL
+    $user = get_userdata($user_id);
+    $name = $user ? $user->display_name : 'Unknown User';
+    ?>
+
     <!-- show all cert details here -->
     <div class="certificate">
         <h1>Certificate of Completion</h1>
         <h2>This is to certify that</h2>
         <div class="recipient"><?php echo $name ?></div>
+
         <div class="details">
             has successfully completed the module:<br>
             <strong><?php echo $cert_details->module_name ?></strong>
