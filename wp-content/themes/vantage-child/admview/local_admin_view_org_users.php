@@ -13,7 +13,7 @@ if (is_user_logged_in()) {
     $email_domain = substr($current_email, strpos($current_email, '@') + 1);
 
     // Check if user is administrator or contributor
-    if (current_user_can('administrator') || current_user_can('contributor')) {
+    if (current_user_can('administrator') || current_user_can('manager')) {
         echo '<style>
             #userTable {
                 border-collapse: collapse;
@@ -63,7 +63,7 @@ if (is_user_logged_in()) {
         $args = array(
             'search'         => '*' . $email_domain . '*', // Search by email domain
             'search_columns' => array('user_email'),
-            'role__in'       => array('subscriber', 'contributor', 'editor', 'author', 'administrator'), // Filter by roles
+            'role__in'       => array('subscriber', 'manager', 'editor', 'author', 'administrator'), // Filter by roles
         );
         $users = get_users($args);
 

@@ -1,0 +1,637 @@
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_universal_fitness_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+        FOREIGN KEY (`user_id`) REFERENCES `wprt_users`(`ID`) ON DELETE CASCADE
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+<li>Executing: SELECT 1 FROM `_wp_sqlite_mysql_information_schema_tables` WHERE table_schema = ? AND table_name = ? | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_tables` (`table_schema`, `table_name`, `table_type`, `engine`, `row_format`, `table_collation`, `table_comment`) VALUES (?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, BASE TABLE, InnoDB, Dynamic, utf8mb4_0900_ai_ci, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, id, 1, , NO, int, , , 10, 0, , , , int, PRI, auto_increment, select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_statistics` (`table_schema`, `table_name`, `non_unique`, `index_schema`, `index_name`, `seq_in_index`, `column_name`, `collation`, `cardinality`, `sub_part`, `packed`, `nullable`, `index_type`, `comment`, `index_comment`, `is_visible`, `expression`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, 0, jm5955g9_healthfitlearning, PRIMARY, 1, id, A, 0, , , , BTREE, , , YES, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_table_constraints` (`table_schema`, `table_name`, `constraint_schema`, `constraint_name`, `constraint_type`) VALUES (?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, jm5955g9_healthfitlearning, PRIMARY, PRIMARY KEY</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, user_id, 2, , NO, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, date, 3, , NO, date, , , , , , , , date, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q1, 4, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q2, 5, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q3, 6, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q4, 7, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q5, 8, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q6, 9, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q7, 10, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q8, 11, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, q9, 12, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_universal_fitness_survey, total, 13, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+FOREIGN KEY and CHECK constraints are not supported yet.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('FOREIGN KEY and...', 0, Object(Exception))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(128): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_fitness_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+        FOREIGN KEY (`user_id`) REFERENCES `wprt_users`(`ID`) ON DELETE CASCADE
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+<li>Executing: SELECT 1 FROM `_wp_sqlite_mysql_information_schema_tables` WHERE table_schema = ? AND table_name = ? | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_tables` (`table_schema`, `table_name`, `table_type`, `engine`, `row_format`, `table_collation`, `table_comment`) VALUES (?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, BASE TABLE, InnoDB, Dynamic, utf8mb4_0900_ai_ci, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, id, 1, , NO, int, , , 10, 0, , , , int, PRI, auto_increment, select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_statistics` (`table_schema`, `table_name`, `non_unique`, `index_schema`, `index_name`, `seq_in_index`, `column_name`, `collation`, `cardinality`, `sub_part`, `packed`, `nullable`, `index_type`, `comment`, `index_comment`, `is_visible`, `expression`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, 0, jm5955g9_healthfitlearning, PRIMARY, 1, id, A, 0, , , , BTREE, , , YES, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_table_constraints` (`table_schema`, `table_name`, `constraint_schema`, `constraint_name`, `constraint_type`) VALUES (?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, jm5955g9_healthfitlearning, PRIMARY, PRIMARY KEY</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, user_id, 2, , NO, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, date, 3, , NO, date, , , , , , , , date, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q1, 4, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q2, 5, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q3, 6, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q4, 7, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q5, 8, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q6, 9, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q7, 10, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q8, 11, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, q9, 12, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_fitness_survey, total, 13, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+FOREIGN KEY and CHECK constraints are not supported yet.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('FOREIGN KEY and...', 0, Object(Exception))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(128): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_ms_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `q10` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+        FOREIGN KEY (`user_id`) REFERENCES `wprt_users`(`ID`) ON DELETE CASCADE
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+<li>Executing: SELECT 1 FROM `_wp_sqlite_mysql_information_schema_tables` WHERE table_schema = ? AND table_name = ? | parameters: jm5955g9_healthfitlearning, wprt_ms_survey</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_tables` (`table_schema`, `table_name`, `table_type`, `engine`, `row_format`, `table_collation`, `table_comment`) VALUES (?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, BASE TABLE, InnoDB, Dynamic, utf8mb4_0900_ai_ci, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, id, 1, , NO, int, , , 10, 0, , , , int, PRI, auto_increment, select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_statistics` (`table_schema`, `table_name`, `non_unique`, `index_schema`, `index_name`, `seq_in_index`, `column_name`, `collation`, `cardinality`, `sub_part`, `packed`, `nullable`, `index_type`, `comment`, `index_comment`, `is_visible`, `expression`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, 0, jm5955g9_healthfitlearning, PRIMARY, 1, id, A, 0, , , , BTREE, , , YES, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_table_constraints` (`table_schema`, `table_name`, `constraint_schema`, `constraint_name`, `constraint_type`) VALUES (?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, jm5955g9_healthfitlearning, PRIMARY, PRIMARY KEY</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, user_id, 2, , NO, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, date, 3, , NO, date, , , , , , , , date, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q1, 4, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q2, 5, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q3, 6, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q4, 7, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q5, 8, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q6, 9, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q7, 10, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q8, 11, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q9, 12, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, q10, 13, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_ms_survey, total, 14, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+FOREIGN KEY and CHECK constraints are not supported yet.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('FOREIGN KEY and...', 0, Object(Exception))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(128): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_specific_joint` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `q10` INT DEFAULT 0,
+        `q11` INT DEFAULT 0,
+        `q12` INT DEFAULT 0,
+        `q13` INT DEFAULT 0,
+        `q14` INT DEFAULT 0,
+        `q15` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+        FOREIGN KEY (`user_id`) REFERENCES `wprt_users`(`ID`) ON DELETE CASCADE
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+<li>Executing: SELECT 1 FROM `_wp_sqlite_mysql_information_schema_tables` WHERE table_schema = ? AND table_name = ? | parameters: jm5955g9_healthfitlearning, wprt_specific_joint</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_tables` (`table_schema`, `table_name`, `table_type`, `engine`, `row_format`, `table_collation`, `table_comment`) VALUES (?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, BASE TABLE, InnoDB, Dynamic, utf8mb4_0900_ai_ci, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, id, 1, , NO, int, , , 10, 0, , , , int, PRI, auto_increment, select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_statistics` (`table_schema`, `table_name`, `non_unique`, `index_schema`, `index_name`, `seq_in_index`, `column_name`, `collation`, `cardinality`, `sub_part`, `packed`, `nullable`, `index_type`, `comment`, `index_comment`, `is_visible`, `expression`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, 0, jm5955g9_healthfitlearning, PRIMARY, 1, id, A, 0, , , , BTREE, , , YES, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_table_constraints` (`table_schema`, `table_name`, `constraint_schema`, `constraint_name`, `constraint_type`) VALUES (?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, jm5955g9_healthfitlearning, PRIMARY, PRIMARY KEY</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, user_id, 2, , NO, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, date, 3, , NO, date, , , , , , , , date, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q1, 4, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q2, 5, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q3, 6, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q4, 7, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q5, 8, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q6, 9, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q7, 10, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q8, 11, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q9, 12, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q10, 13, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q11, 14, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q12, 15, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q13, 16, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q14, 17, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, q15, 18, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_specific_joint, total, 19, 0, YES, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+FOREIGN KEY and CHECK constraints are not supported yet.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('FOREIGN KEY and...', 0, Object(Exception))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(128): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_seminar_preprod2` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `sem_date` DATE NOT NULL,
+        `course` VARCHAR(255) NOT NULL,
+        FOREIGN KEY (`user_id`) REFERENCES `wprt_users`(`ID`) ON DELETE CASCADE
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+<li>Executing: SELECT 1 FROM `_wp_sqlite_mysql_information_schema_tables` WHERE table_schema = ? AND table_name = ? | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_tables` (`table_schema`, `table_name`, `table_type`, `engine`, `row_format`, `table_collation`, `table_comment`) VALUES (?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, BASE TABLE, InnoDB, Dynamic, utf8mb4_0900_ai_ci, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, id, 1, , NO, int, , , 10, 0, , , , int, PRI, auto_increment, select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_statistics` (`table_schema`, `table_name`, `non_unique`, `index_schema`, `index_name`, `seq_in_index`, `column_name`, `collation`, `cardinality`, `sub_part`, `packed`, `nullable`, `index_type`, `comment`, `index_comment`, `is_visible`, `expression`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, 0, jm5955g9_healthfitlearning, PRIMARY, 1, id, A, 0, , , , BTREE, , , YES, </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_table_constraints` (`table_schema`, `table_name`, `constraint_schema`, `constraint_name`, `constraint_type`) VALUES (?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, jm5955g9_healthfitlearning, PRIMARY, PRIMARY KEY</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, user_id, 2, , NO, int, , , 10, 0, , , , int, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, sem_date, 3, , NO, date, , , , , , , , date, , , select,insert,update,references, , , </li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_healthfitlearning, wprt_seminar_preprod2, course, 4, , NO, varchar, 255, 1020, , , , utf8mb4, utf8mb4_0900_ai_ci, varchar(255), , , select,insert,update,references, , , </li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+FOREIGN KEY and CHECK constraints are not supported yet.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('FOREIGN KEY and...', 0, Object(Exception))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(128): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_universal_fitness_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Failed to parse the MySQL query.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(672): WP_SQLite_Driver->new_driver_exception('Failed to parse...')
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_fitness_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Failed to parse the MySQL query.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(672): WP_SQLite_Driver->new_driver_exception('Failed to parse...')
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_ms_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `q10` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Failed to parse the MySQL query.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(672): WP_SQLite_Driver->new_driver_exception('Failed to parse...')
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_specific_joint` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `q10` INT DEFAULT 0,
+        `q11` INT DEFAULT 0,
+        `q12` INT DEFAULT 0,
+        `q13` INT DEFAULT 0,
+        `q14` INT DEFAULT 0,
+        `q15` INT DEFAULT 0,
+        `total` INT DEFAULT 0,
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Failed to parse the MySQL query.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(672): WP_SQLite_Driver->new_driver_exception('Failed to parse...')
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_seminar_preprod2` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `sem_date` DATE NOT NULL,
+        `course` VARCHAR(255) NOT NULL,
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Failed to parse the MySQL query.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(672): WP_SQLite_Driver->new_driver_exception('Failed to parse...')
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_universal_fitness_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `total` INT DEFAULT 0
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_fitness_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `total` INT DEFAULT 0
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_ms_survey` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `q10` INT DEFAULT 0,
+        `total` INT DEFAULT 0
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_specific_joint` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `date` DATE NOT NULL,
+        `q1` INT DEFAULT 0,
+        `q2` INT DEFAULT 0,
+        `q3` INT DEFAULT 0,
+        `q4` INT DEFAULT 0,
+        `q5` INT DEFAULT 0,
+        `q6` INT DEFAULT 0,
+        `q7` INT DEFAULT 0,
+        `q8` INT DEFAULT 0,
+        `q9` INT DEFAULT 0,
+        `q10` INT DEFAULT 0,
+        `q11` INT DEFAULT 0,
+        `q12` INT DEFAULT 0,
+        `q13` INT DEFAULT 0,
+        `q14` INT DEFAULT 0,
+        `q15` INT DEFAULT 0,
+        `total` INT DEFAULT 0
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>CREATE TABLE IF NOT EXISTS `wprt_seminar_preprod2` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT NOT NULL,
+        `sem_date` DATE NOT NULL,
+        `course` VARCHAR(255) NOT NULL
+    ) DEFAULT CHARACTER SET utf8mb4;</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(719): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('CREATE TABLE IF...')
+#2 /var/www/html/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('CREATE TABLE IF...')
+#3 /var/www/html/wp-content/plugins/Assesment-Records/index.php(123): WP_SQLite_DB->query('CREATE TABLE IF...')
+#4 /var/www/html/wp-includes/class-wp-hook.php(324): assessment_records_create_tables(false)
+#5 /var/www/html/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#8 /var/www/html/wp-admin/plugins.php(60): activate_plugin('Assesment-Recor...', 'https://healthf...', false)
+#9 {main}</pre>
