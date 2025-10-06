@@ -56,6 +56,7 @@ function elearn_view_results_shortcode() {
         $modules_data = [];
 
         foreach ($results as $row) {
+            if ($row->module_name === "Demo Module") continue;
             $mod_id   = $row->module_id;
             $mod_name = $row->module_name;
             
