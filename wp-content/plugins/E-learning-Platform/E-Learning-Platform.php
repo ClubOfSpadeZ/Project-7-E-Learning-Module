@@ -235,16 +235,37 @@ function elearn_handle_export_user_progress() {
     $modules = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_module ORDER BY module_name ASC");
 
     // Fetch attempts
-    $attempts = $wpdb->get_results("SELECT user_id, module_module_id, attempt_time FROM {$wpdb->prefix}elearn_attempt");
+    $attempts = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_attempt");
 
-    $attempt_lookup = [];
-    foreach ($attempts as $attempt) {
-        $attempt_lookup[$attempt->user_id][$attempt->module_module_id] = $attempt->attempt_time;
+    // Fetch certificates
+    $certs = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_certificate");
+
+    // Build certificate lookup table
+    $cert_lookup = [];
+    $cert_view_page = get_page_by_path('cert-view');
+    $cert_view_url = $cert_view_page ? get_permalink($cert_view_page->ID) : '#';
+
+    foreach ($certs as $cert) {
+        foreach ($attempts as $attempt) {
+            if ($attempt->attempt_id == $cert->attempt_id) {
+                $uid = $attempt->user_id;
+                $mid = $attempt->module_module_id;
+
+                $cert_lookup[$uid][$mid] = [
+                    'completed' => $cert->certificate_completion,
+                    'url' => add_query_arg([
+                        'module_id' => intval($mid),
+                        'cert_id' => intval($cert->certificate_id),
+                        'user_id' => intval($uid)
+                    ], $cert_view_url)
+                ];
+            }
+        }
     }
 
     // Send CSV headers
     header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="user_progress_' . date('Y-m-d') . '.csv"');
+    header('Content-Disposition: attachment; filename="user_certificates_' . date('Y-m-d') . '.csv"');
 
     $fp = fopen('php://output', 'w');
 
@@ -255,12 +276,17 @@ function elearn_handle_export_user_progress() {
     }
     fputcsv($fp, $header);
 
-    // Data rows
+    // Data rows (Certificate completion dates)
     foreach ($users as $user) {
         $row = [$user->display_name];
         foreach ($modules as $module) {
-            if (isset($attempt_lookup[$user->ID][$module->module_id])) {
-                $dt = new DateTime($attempt_lookup[$user->ID][$module->module_id]);
+            if (
+                isset($cert_lookup[$user->ID][$module->module_id]) &&
+                !empty($cert_lookup[$user->ID][$module->module_id]['completed']) &&
+                $cert_lookup[$user->ID][$module->module_id]['completed'] !== '0000-00-00 00:00:00'
+            ) {
+                $certData = $cert_lookup[$user->ID][$module->module_id];
+                $dt = new DateTime($certData['completed']);
                 $row[] = $dt->format('d/m/Y h:i A');
             } else {
                 $row[] = 'Not Completed';
@@ -272,6 +298,7 @@ function elearn_handle_export_user_progress() {
     fclose($fp);
     exit;
 }
+
 
 // CSV export handler
 function elearn_export_personal_results() {
