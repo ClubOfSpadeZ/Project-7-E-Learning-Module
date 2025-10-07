@@ -33,7 +33,7 @@ if (isset($_GET['export'])) {
         if ($export_type === 'all') {
             // Query all users
             $args = array(
-                'role__in' => array('administrator', 'subscriber', 'manager'), // Include 'manager' role
+                'role__in' => array('administrator', 'subscriber', 'manager', 'student'), // Include 'manager' role
             );
             $users_query = new WP_User_Query($args);
             $users = $users_query->get_results();
@@ -47,7 +47,7 @@ if (isset($_GET['export'])) {
                 $args = array(
                     'search' => '*' . $search_query . '*',
                     'search_columns' => array('user_login', 'user_email'),
-                    'role__in' => array('administrator', 'subscriber', 'manager'), // Include 'manager' role
+                    'role__in' => array('administrator', 'subscriber', 'manager', 'student'), // Include 'manager' role
                 );
                 $users_query = new WP_User_Query($args);
                 $users = $users_query->get_results();

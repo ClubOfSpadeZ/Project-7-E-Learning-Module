@@ -75,10 +75,10 @@ get_header();
 
                 if (current_user_can('manage_options')) {
                     // If the user is an admin, allow them to search for any user
-                    $users = get_users(array('role__in' => array('subscriber', 'manager')));
+                    $users = get_users(array('role__in' => array('subscriber', 'manager', 'student')));
                 } else {
                     // If the user is not an admin, allow them to search for users with the same email domain
-                    $users = get_users(array('role__in' => array('subscriber', 'manager'), 'search' => "*@$user_email_domain"));
+                    $users = get_users(array('role__in' => array('subscriber', 'manager', 'student'), 'search' => "*@$user_email_domain"));
                 }
 
                 if ($users) {
