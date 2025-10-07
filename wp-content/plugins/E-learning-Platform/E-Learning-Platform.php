@@ -150,25 +150,39 @@ function elearn_quiz_check() {
     }
 
     $score = 0;
-    foreach ($answers as $qid => $ans) {
-        if (!isset($correct_answers[$qid])) {
-            continue; // No correct answer recorded
+    $incorrect = [];
+
+    foreach ($correct_answers as $qid => $correct_value) {
+        if (!isset($answers[$qid]) || $answers[$qid] === '') {
+            // User didn’t answer
+            $incorrect[] = $qid;
+            continue;
         }
-        if (is_array($correct_answers[$qid])) {
-            // Multiple choice (user picks ONE, but DB may allow many correct)
-            if (in_array(intval($ans), $correct_answers[$qid], true)) {
+
+        $ans = $answers[$qid];
+
+        if (is_array($correct_value)) {
+            if (in_array(intval($ans), $correct_value, true)) {
                 $score++;
+            } else {
+                $incorrect[] = $qid;
             }
         } else {
-            // Short answer
-            if (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+            if (is_string($ans) && strtolower(trim($ans)) === $correct_value) {
                 $score++;
-            } elseif (is_numeric($ans) && intval($ans) === intval($correct_answers[$qid])) {
+            } elseif (is_numeric($ans) && intval($ans) === intval($correct_value)) {
                 $score++;
+            } else {
+                $incorrect[] = $qid;
             }
         }
     }
-    wp_send_json_success(['score' => $score, 'total' => count($correct_answers)]);
+
+    wp_send_json_success([
+        'score' => $score,
+        'total' => count($correct_answers),
+        'incorrect' => $incorrect
+    ]);
 }
 
 // Enqueue script

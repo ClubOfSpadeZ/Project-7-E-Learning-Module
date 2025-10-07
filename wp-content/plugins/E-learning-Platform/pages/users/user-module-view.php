@@ -239,9 +239,27 @@ function elearn_module_view_shortcode() {
                 const score = response.data.score;
                 const total = response.data.total;
                 if (score === total) {
-                    $('#quizResult').removeClass('fail').addClass('pass').html(`🎉 Congratulations! You passed with ${score}/${total}.`);
+                    $('#quizResult')
+                        .removeClass('fail')
+                        .addClass('pass')
+                        .html(`🎉 Congratulations! You passed with ${score}/${total}.`);
                 } else {
-                    $('#quizResult').removeClass('pass').addClass('fail').html(`You scored ${score}/${total}. Please try again — 100% required to pass.`);
+                    let resultMessage = `You scored ${score}/${total}. Please try again — 100% required to pass.`;
+
+                    if (response.data.incorrect && response.data.incorrect.length > 0) {
+                        const incorrectNums = [];
+                        $('.elearn-question').each(function(index) {
+                            if (response.data.incorrect.includes($(this).data('qid'))) {
+                                incorrectNums.push(index + 1);
+                            }
+                        });
+                        resultMessage += `<br><br><strong>Incorrect Answers:</strong> ${incorrectNums.map(n => 'Question ' + n).join(', ')}`;
+                    }
+
+                    $('#quizResult')
+                        .removeClass('pass')
+                        .addClass('fail')
+                        .html(resultMessage);
                 }
                 // Log attempt if not the demo module
                 if ('<?php echo esc_js($module->module_name); ?>' !== 'Demo Module') {
