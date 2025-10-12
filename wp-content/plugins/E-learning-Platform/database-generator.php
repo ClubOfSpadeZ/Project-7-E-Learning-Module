@@ -13,6 +13,7 @@ function elearn_database_generator() {
         organisation_name VARCHAR(45) NULL,
         organisation_address VARCHAR(255) NULL,
         organisation_phone VARCHAR(45) NULL,
+        organisation_mobile VARCHAR(45) NULL,
         organisation_email VARCHAR(100) NULL,
         organisation_abn VARCHAR(45) NULL,
         organisation_created DATETIME NULL DEFAULT '0000-00-00 00:00:00',

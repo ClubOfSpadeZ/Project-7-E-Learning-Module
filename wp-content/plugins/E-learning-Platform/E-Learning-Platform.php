@@ -4,11 +4,11 @@
  * Plugin URI:  https://example.com/my-custom-plugin
  * Description: A starter template for building WordPress plugins.
  * Version:     1.0.1
- * Author:      Group 7 UC Capstone Project
+ * Author:      Group 7 - UC Capstone Project 2025
  * Author URI:  https://github.com/ClubOfSpadeZ/Project-7-E-Learning-Module
  * License:     GPL2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: E-Learing-Platform
+ * Text Domain: E-Learning-Platform
  * Domain Path: /languages
  */
 

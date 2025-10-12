@@ -48,7 +48,7 @@ function elearn_module_view_shortcode() {
     //display content only for logged-in users with specific roles unless it is the Demo Module
     if (!is_user_logged_in()) {
         return '<p>Please log in to access modules.</p>
-                <a href="https://healthfitlearning.wp.local/login">&larr; Login</a>';                
+            <a href="' . esc_url(home_url('/login')) . '">&larr; Login</a>';
     } elseif (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles) && $module->module_name !== 'Demo Module') {
         return '<p>You do not have permission to access this page.</p>
                 <a href="' . esc_url($dashboard_url) . '">&larr; Back to Dashboard</a>';

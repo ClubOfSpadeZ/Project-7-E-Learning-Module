@@ -31,7 +31,7 @@ function elearn_module_dash_shortcode() {
     
     if (!is_user_logged_in()) {
         return '<p>Please log in to access modules.</p>
-                <a href="https://healthfitlearning.wp.local/login">&larr; Login</a>';
+                <a href="' . esc_url(home_url('/login')) . '">&larr; Login</a>';
     }
     ob_start();
 
