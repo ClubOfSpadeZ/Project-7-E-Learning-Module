@@ -27,7 +27,7 @@ function elearn_user_register_shortcode()
 {
     if (!is_user_logged_in()) {
         // Redirect non-logged-in users to the registration page
-        return '<p>You must be logged in to access this page. <a href="' . esc_url(wp_registration_url()) . '">Register here</a>.</p>';
+        return '<p>You must be logged in to access this page. <a href="' . esc_url(home_url('/login')) . '">Register here</a>.</p>';
     }
 
     $current_user_id = get_current_user_id();

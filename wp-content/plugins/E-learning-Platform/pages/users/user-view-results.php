@@ -95,7 +95,6 @@ function elearn_view_results_shortcode() {
     // Now echo table once with final data
     ?>
     <style>
-        /* Container around the table for scroll */
         .elearn-results-table-container {
             max-height: 400px;
             overflow-y: auto;
@@ -105,7 +104,6 @@ function elearn_view_results_shortcode() {
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Base table */
         .elearn-results-table {
             width: 100%;
             border-collapse: collapse;
@@ -113,32 +111,28 @@ function elearn_view_results_shortcode() {
             color: #333;
         }
 
-        /* Sticky header */
         .elearn-results-table thead {
             position: sticky;
             top: 0;
-            background: #666666; /* dark grey header */
+            background: #666666; 
             color: #fff;
             font-weight: 600;
             z-index: 2;
         }
 
-        /* Header & cell spacing with vertical + horizontal lines */
         .elearn-results-table th,
         .elearn-results-table td {
             padding: 10px 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd; /* horizontal lines */
-            border-right: 1px solid #ddd;  /* vertical lines */
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd; 
         }
 
-        /* Remove right border from last column */
         .elearn-results-table th:last-child,
         .elearn-results-table td:last-child {
             border-right: none;
         }
 
-        /* Column widths stay aligned */
         .elearn-results-table thead tr,
         .elearn-results-table tbody tr {
             display: table;
@@ -146,7 +140,6 @@ function elearn_view_results_shortcode() {
             table-layout: fixed;
         }
 
-        /* Row striping & hover */
         .elearn-results-table tbody tr:nth-child(even) {
             background: #f9f9f9;
         }
@@ -154,7 +147,6 @@ function elearn_view_results_shortcode() {
             background: #eef6fb;
         }
 
-        /* Back to Dashboard link */
         #elearn-btn-back {
         display: inline-block;
             padding: 12px 24px;
@@ -172,7 +164,6 @@ function elearn_view_results_shortcode() {
             transform: translateY(-2px);    
         }
 
-        /* CSV button */
         .elearn-results-btn {
             display: inline-block;
             margin-top: 15px;
@@ -243,4 +234,4 @@ function elearn_view_results_shortcode() {
 
     return ob_get_clean();
 }
-add_shortcode('view-results', 'elearn_view_results_shortcode');
+add_shortcode('view_results', 'elearn_view_results_shortcode');

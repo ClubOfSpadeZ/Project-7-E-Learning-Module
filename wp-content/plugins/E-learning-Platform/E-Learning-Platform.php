@@ -4,11 +4,11 @@
  * Plugin URI:  https://example.com/my-custom-plugin
  * Description: A starter template for building WordPress plugins.
  * Version:     1.0.1
- * Author:      Group 7 UC Capstone Project
+ * Author:      Group 7 - UC Capstone Project 2025
  * Author URI:  https://github.com/ClubOfSpadeZ/Project-7-E-Learning-Module
  * License:     GPL2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: E-Learing-Platform
+ * Text Domain: E-Learning-Platform
  * Domain Path: /languages
  */
 
@@ -150,25 +150,39 @@ function elearn_quiz_check() {
     }
 
     $score = 0;
-    foreach ($answers as $qid => $ans) {
-        if (!isset($correct_answers[$qid])) {
-            continue; // No correct answer recorded
+    $incorrect = [];
+
+    foreach ($correct_answers as $qid => $correct_value) {
+        if (!isset($answers[$qid]) || $answers[$qid] === '') {
+            // User didn’t answer
+            $incorrect[] = $qid;
+            continue;
         }
-        if (is_array($correct_answers[$qid])) {
-            // Multiple choice (user picks ONE, but DB may allow many correct)
-            if (in_array(intval($ans), $correct_answers[$qid], true)) {
+
+        $ans = $answers[$qid];
+
+        if (is_array($correct_value)) {
+            if (in_array(intval($ans), $correct_value, true)) {
                 $score++;
+            } else {
+                $incorrect[] = $qid;
             }
         } else {
-            // Short answer
-            if (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+            if (is_string($ans) && strtolower(trim($ans)) === $correct_value) {
                 $score++;
-            } elseif (is_numeric($ans) && intval($ans) === intval($correct_answers[$qid])) {
+            } elseif (is_numeric($ans) && intval($ans) === intval($correct_value)) {
                 $score++;
+            } else {
+                $incorrect[] = $qid;
             }
         }
     }
-    wp_send_json_success(['score' => $score, 'total' => count($correct_answers)]);
+
+    wp_send_json_success([
+        'score' => $score,
+        'total' => count($correct_answers),
+        'incorrect' => $incorrect
+    ]);
 }
 
 // Enqueue script

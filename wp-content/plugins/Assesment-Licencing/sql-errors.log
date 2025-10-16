@@ -1,0 +1,128 @@
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>ALTER TABLE wprt_license_registrations ADD COLUMN payment_link TEXT</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+<li>Executing: SELECT 1 FROM sqlite_temp_schema WHERE type = &#039;table&#039; AND name = ? | parameters: wprt_license_registrations</li>
+<li>Executing: SELECT
+					COLUMN_NAME,
+					LOWER(COLUMN_NAME) AS COLUMN_NAME_LOWERCASE
+				FROM `_wp_sqlite_mysql_information_schema_columns` WHERE table_schema = ? AND table_name = ? | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations</li>
+<li>Executing: SELECT 1 FROM sqlite_temp_schema WHERE type = &#039;table&#039; AND name = ? | parameters: wprt_license_registrations</li>
+<li>Executing: 
+				SELECT MAX(ordinal_position)
+				FROM `_wp_sqlite_mysql_information_schema_columns`
+				WHERE table_schema = ?
+				AND table_name = ?
+			 | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations</li>
+<li>Executing: INSERT INTO `_wp_sqlite_mysql_information_schema_columns` (`table_schema`, `table_name`, `column_name`, `ordinal_position`, `column_default`, `is_nullable`, `data_type`, `character_maximum_length`, `character_octet_length`, `numeric_precision`, `numeric_scale`, `datetime_precision`, `character_set_name`, `collation_name`, `column_type`, `column_key`, `extra`, `privileges`, `column_comment`, `generation_expression`, `srs_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations, payment_link, 14, , YES, text, 65535, 65535, , , , utf8mb4, utf8mb4_0900_ai_ci, text, , , select,insert,update,references, , , </li>
+<li>Executing: PRAGMA foreign_keys | (no parameters)</li>
+<li>Executing: PRAGMA foreign_keys = OFF | (no parameters)</li>
+<li>Executing: 
+				SELECT *
+				FROM `_wp_sqlite_mysql_information_schema_tables`
+				WHERE table_type = &#039;BASE TABLE&#039;
+				AND table_schema = ?
+				AND table_name = ?
+			 | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations</li>
+<li>Executing: SELECT * FROM `_wp_sqlite_mysql_information_schema_columns` WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations</li>
+<li>Executing: 
+					SELECT *
+					FROM `_wp_sqlite_mysql_information_schema_statistics`
+					WHERE table_schema = ?
+					AND table_name = ?
+					ORDER BY
+						INDEX_NAME = &#039;PRIMARY&#039; DESC,
+						NON_UNIQUE = &#039;0&#039; DESC,
+						INDEX_TYPE = &#039;SPATIAL&#039; DESC,
+						INDEX_TYPE = &#039;BTREE&#039; DESC,
+						INDEX_TYPE = &#039;FULLTEXT&#039; DESC,
+						ROWID,
+						SEQ_IN_INDEX
+				 | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations</li>
+<li>Executing: SELECT * FROM `_wp_sqlite_mysql_information_schema_referential_constraints` WHERE constraint_schema = ? AND table_name = ? ORDER BY constraint_name | parameters: jm5955g9_wp_9mfsc, wprt_license_registrations</li>
+<li>Executing: CREATE TABLE `_wp_sqlite_tmp_wprt_license_registrations_68eb4b92aba18` (
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `first_name` TEXT COLLATE NOCASE,
+  `surname` TEXT COLLATE NOCASE,
+  `work_title` TEXT COLLATE NOCASE,
+  `organisation` TEXT COLLATE NOCASE,
+  `email` TEXT COLLATE NOCASE,
+  `work_phone` TEXT COLLATE NOCASE,
+  `mobile` TEXT COLLATE NOCASE,
+  `comments` TEXT COLLATE NOCASE,
+  `license_code` TEXT COLLATE NOCASE,
+  `invoice_sent` INTEGER DEFAULT &#039;0&#039;,
+  `invoice_amount` REAL DEFAULT &#039;0&#039;,
+  `created_at` TEXT COLLATE NOCASE DEFAULT CURRENT_TIMESTAMP,
+  `payment_link` TEXT COLLATE NOCASE
+) STRICT | (no parameters)</li>
+<li>Executing: INSERT INTO `_wp_sqlite_tmp_wprt_license_registrations_68eb4b92aba18` (`rowid`, `comments`, `created_at`, `email`, `first_name`, `id`, `invoice_amount`, `invoice_sent`, `license_code`, `mobile`, `organisation`, `surname`, `work_phone`, `work_title`) SELECT `rowid`, `comments`, `created_at`, `email`, `first_name`, `id`, `invoice_amount`, `invoice_sent`, `license_code`, `mobile`, `organisation`, `surname`, `work_phone`, `work_title` FROM `wprt_license_registrations` | (no parameters)</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 1 no such table: wprt_license_registrations
+</div>
+<p>Backtrace:</p>
+<pre>#0 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(847): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('ALTER TABLE wpr...')
+#2 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('ALTER TABLE wpr...')
+#3 /wordpress/wp-admin/includes/upgrade.php(3321): WP_SQLite_DB->query('ALTER TABLE wpr...')
+#4 /wordpress/wp-content/plugins/Assesment-Licencing/Assesment-Licencing-index.php(49): dbDelta(Array)
+#5 /wordpress/wp-includes/class-wp-hook.php(324): create_license_registrations_table(false)
+#6 /wordpress/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#7 /wordpress/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#8 /wordpress/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#9 /wordpress/wp-admin/plugins.php(60): activate_plugin('Assesment-Licen...', 'https://workhea...', false)
+#10 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>ALTER TABLE wprt_license_registrations ADD COLUMN payment_link TEXT</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(847): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('ALTER TABLE wpr...')
+#2 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('ALTER TABLE wpr...')
+#3 /wordpress/wp-admin/includes/upgrade.php(3321): WP_SQLite_DB->query('ALTER TABLE wpr...')
+#4 /wordpress/wp-content/plugins/Assesment-Licencing/Assesment-Licencing-index.php(50): dbDelta(Array)
+#5 /wordpress/wp-includes/class-wp-hook.php(324): create_license_registrations_table(false)
+#6 /wordpress/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#7 /wordpress/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#8 /wordpress/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#9 /wordpress/wp-admin/plugins.php(60): activate_plugin('Assesment-Licen...', 'https://workhea...', false)
+#10 {main}</pre>
+SQL Error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>ALTER TABLE wprt_license_registrations ADD COLUMN payment_link TEXT</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN IMMEDIATE | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+SQLSTATE[HY000]: General error: 10 disk I/O error
+</div>
+<p>Backtrace:</p>
+<pre>#0 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite-ast/class-wp-sqlite-driver.php(847): WP_SQLite_Driver->new_driver_exception('SQLSTATE[HY000]...', 'HY000', Object(PDOException))
+#1 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(537): WP_SQLite_Driver->query('ALTER TABLE wpr...')
+#2 /wordpress/wp-content/mu-plugins/sqlite-database-integration/wp-includes/sqlite/class-wp-sqlite-db.php(449): WP_SQLite_DB->_do_query('ALTER TABLE wpr...')
+#3 /wordpress/wp-admin/includes/upgrade.php(3321): WP_SQLite_DB->query('ALTER TABLE wpr...')
+#4 /wordpress/wp-content/plugins/Assesment-Licencing/Assesment-Licencing-index.php(50): dbDelta(Array)
+#5 /wordpress/wp-includes/class-wp-hook.php(324): create_license_registrations_table(false)
+#6 /wordpress/wp-includes/class-wp-hook.php(348): WP_Hook->apply_filters('', Array)
+#7 /wordpress/wp-includes/plugin.php(517): WP_Hook->do_action(Array)
+#8 /wordpress/wp-admin/includes/plugin.php(703): do_action('activate_Assesm...', false)
+#9 /wordpress/wp-admin/plugins.php(60): activate_plugin('Assesment-Licen...', 'https://workhea...', false)
+#10 {main}</pre>
