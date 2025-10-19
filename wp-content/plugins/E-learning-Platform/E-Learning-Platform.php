@@ -435,27 +435,29 @@ function elearn_verify_access_code()
 // Define a global function to retrieve user progress
 if ( ! function_exists( 'elearn_licence_payment_success' ) ) {
     function elearn_licence_payment_success( $row_id = null ) {
+
+        error_log('Licence payment success function initiated for row_id: ' . $row_id);
+
         global $wpdb;
 
         $userstable = $wpdb->prefix . 'users';
         $licencetable = $wpdb->prefix . 'license_registrations';
 
         // get user_id from row id
-        $user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM $licencetable WHERE id = %d", $row_id ) );
-        $org_id = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $licencetable WHERE id = %d", $row_id ) );
-        $org_name = $wpdb->get_var( $wpdb->prepare( "SELECT organisation FROM $licencetable WHERE id = %d", $row_id ) );
-        $org_work_phone = $wpdb->get_var( $wpdb->prepare( "SELECT work_phone FROM $licencetable WHERE id = %d", $row_id ) );
-        $org_email = $wpdb->get_var( $wpdb->prepare( "SELECT email FROM $licencetable WHERE id = %d", $row_id ) );
-        $org_mobile = $wpdb->get_var( $wpdb->prepare( "SELECT mobile FROM $licencetable WHERE id = %d", $row_id ) );
+        $user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_name = $wpdb->get_var( $wpdb->prepare( "SELECT organisation FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_work_phone = $wpdb->get_var( $wpdb->prepare( "SELECT work_phone FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_email = $wpdb->get_var( $wpdb->prepare( "SELECT email FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_mobile = $wpdb->get_var( $wpdb->prepare( "SELECT mobile FROM $licencetable WHERE id = %s", $row_id ) );
 
-        error_log('Licence payment success function called for org_id: ' . $org_id);
+        error_log('Licence payment success function called for org_id: ' . $row_id);
 
         // Create organisation if it doesn't exist
-        if ( !empty( $org_id ) ) {
+        if ( !empty( $row_id ) ) {
             $wpdb->insert( 
                 $wpdb->prefix . 'elearn_organisation', 
                 [ 
-                    'organisation_id' => $org_id,
+                    'organisation_id' => $row_id,
                     'organisation_name' => $org_name,
                     'organisation_address' => '',
                     'organisation_phone' => $org_work_phone,
@@ -476,7 +478,10 @@ if ( ! function_exists( 'elearn_licence_payment_success' ) ) {
                 ]
             );
             $org_id = $wpdb->insert_id;
+        } else {
+            error_log('No organisation ID found for row_id: ' . $row_id);
         }
+        
 
         if ($user_id) {
             // Check if the user has the "administrator" role
@@ -484,9 +489,15 @@ if ( ! function_exists( 'elearn_licence_payment_success' ) ) {
             if (in_array('administrator', $user->roles)) {
                 echo '<div class="notice notice-error"><p>Administrators cannot be added to an organisation.</p></div>';
             } else {
-                // Update the user's organisation_id metadata
-                update_user_meta($user_id, 'organisation_id', $org_id);
-                $user->set_role('manager');
+                // check if organisation_id metadata exists
+                $existing_org_id = get_user_meta($user_id, 'organisation_id', true);
+                if ($existing_org_id && $existing_org_id != 0) {
+                    // If it exists, error to user
+                    echo '<div class="notice notice-error"><p>User is already a member of an organisation.</p></div>';
+                } else {
+                    add_user_meta($user_id, 'organisation_id', $row_id);
+                    $user->set_role('manager');
+                }
             }
         }
     }
