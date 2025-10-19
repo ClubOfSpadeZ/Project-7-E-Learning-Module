@@ -398,7 +398,7 @@ function elearn_manager_dash_shortcode()
                                 $message .= "Please feel free to reach out if you have questions about the process.\r\n\r\n";
                                 $message .= "Regards\r\n<Insert Signature>";
 
-                                $subject = urlencode("Register for Fitness Frontline E-Learning Platform");
+                                $subject = rawurlencode("Register for Fitness Frontline E-Learning Platform");
                                 $body = rawurlencode($message);
                                 $mailto = 'mailto:?subject=' . $subject . '&body=' . $body;
                                 ?>
