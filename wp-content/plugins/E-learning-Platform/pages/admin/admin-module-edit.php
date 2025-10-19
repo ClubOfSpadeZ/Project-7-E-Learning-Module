@@ -186,16 +186,14 @@ function elearn_edit_module_page() {
 
     // Linked questions
     foreach ($linked_questions as $row) {
+        $edit_url = admin_url('admin.php?page=elearn-edit-question&question_id=' . intval($row->question_id));
         $is_linked = isset($linked_ids[$row->question_id]);
         echo '<tr>
                 <td>' . esc_html($row->question_id) . '</td>
                 <td>' . esc_html($row->question_text) . '</td>
                 <td><input type="checkbox" name="linked_questions[]" value="' . intval($row->question_id) . '" ' . ($is_linked ? 'checked' : '') . '></td>
                 <td>
-                    <form method="post" action="' . admin_url('admin.php?page=elearn-edit-question') . '" style="display:inline;">
-                        <input type="hidden" name="question_id" value="' . intval($row->question_id) . '">
-                        <input type="submit" class="button" value="Edit">
-                    </form>
+                    <a href="' . esc_url($edit_url) . '" class="button">Edit</a>
                 </td>
             </tr>';
     }
@@ -203,6 +201,7 @@ function elearn_edit_module_page() {
     // Unlinked questions
     $i = 1;
     foreach ($all_questions as $row) {
+        $edit_url = admin_url('admin.php?page=elearn-edit-question&question_id=' . intval($row->question_id));
         if (!isset($linked_ids[$row->question_id])) {
             if ($i == 1) {
                 echo '<tr><td colspan="4" style="background:#f9f9f9; text-align:center; font-weight:bold;"></td></tr>';
@@ -213,10 +212,7 @@ function elearn_edit_module_page() {
                     <td>' . esc_html($row->question_text) . '</td>
                     <td><input type="checkbox" name="linked_questions[]" value="' . intval($row->question_id) . '"></td>
                     <td>
-                        <form method="post" action="' . admin_url('admin.php?page=elearn-edit-question') . '" style="display:inline;">
-                            <input type="hidden" name="question_id" value="' . intval($row->question_id) . '">
-                            <input type="submit" class="button" value="Edit">
-                        </form>
+                        <a href="' . esc_url($edit_url) . '" class="button">Edit</a>
                     </td>
                 </tr>';
         }
