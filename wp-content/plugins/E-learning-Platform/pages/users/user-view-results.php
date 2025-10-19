@@ -33,6 +33,13 @@ function elearn_view_results_shortcode() {
     $attempt_tbl = $wpdb->prefix . 'elearn_attempt';
     $cert_tbl = $wpdb->prefix . 'elearn_certificate';
     
+    $user_roles   = (array) $username->roles;
+    if (!is_user_logged_in()) {
+        return '<p>Please log in to access your results.</p>';
+    } elseif (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
+        return '<p>You do not have permission to access this page.</p>';
+    } 
+
     $results = $wpdb->get_results($wpdb->prepare(
         "SELECT m.module_id, m.module_name, a.attempt_id, c.certificate_id, c.certificate_completion
         FROM $module_tbl m
@@ -42,12 +49,7 @@ function elearn_view_results_shortcode() {
         $user_id
     ));
 
-    $user_roles   = (array) $username->roles;
-    if (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
-        return '<p>You do not have permission to access this page.</p>';
-    } elseif (!is_user_logged_in()) {
-        return '<p>Please log in to access your dashboard.</p>';
-    }
+    
     
     ob_start();        
     //Display all modules with number of attempts, passed or not, most recent certificate completion time
