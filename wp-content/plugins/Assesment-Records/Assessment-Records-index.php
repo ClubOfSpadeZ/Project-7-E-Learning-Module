@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 define('ASSESSMENT_RECORDS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ASSESSMENT_RECORDS_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// require_once ASSESSMENT_RECORDS_PLUGIN_DIR . 'admin-capabilities-view.php';
+require_once ASSESSMENT_RECORDS_PLUGIN_DIR . 'admin-capabilities-view.php';
 
 // Enqueue styles and scripts
 function assessment_records_enqueue_assets() {
@@ -141,7 +141,7 @@ function assessment_records_create_roles() {
                 'read' => true,
                 'edit_posts' => false,
                 'upload_files' => false,
-                'manage_options' => true,
+                'manage_options' => false,
                 'manage_manager_pages' => true,
                 'WHS' => true,
                 'contributor' => true,

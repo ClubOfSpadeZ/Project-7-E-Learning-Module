@@ -431,3 +431,63 @@ function elearn_verify_access_code()
 
     wp_die();
 }
+
+// Define a global function to retrieve user progress
+if ( ! function_exists( 'elearn_licence_payment_success' ) ) {
+    function elearn_licence_payment_success( $row_id = null ) {
+        global $wpdb;
+
+        $userstable = $wpdb->prefix . 'users';
+        $licencetable = $wpdb->prefix . 'license_registrations';
+
+        // get user_id from row id
+        $user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM $licencetable WHERE id = %d", $row_id ) );
+        $org_id = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $licencetable WHERE id = %d", $row_id ) );
+        $org_name = $wpdb->get_var( $wpdb->prepare( "SELECT organisation FROM $licencetable WHERE id = %d", $row_id ) );
+        $org_work_phone = $wpdb->get_var( $wpdb->prepare( "SELECT work_phone FROM $licencetable WHERE id = %d", $row_id ) );
+        $org_email = $wpdb->get_var( $wpdb->prepare( "SELECT email FROM $licencetable WHERE id = %d", $row_id ) );
+        $org_mobile = $wpdb->get_var( $wpdb->prepare( "SELECT mobile FROM $licencetable WHERE id = %d", $row_id ) );
+
+        error_log('Licence payment success function called for org_id: ' . $org_id);
+
+        // Create organisation if it doesn't exist
+        if ( !empty( $org_id ) ) {
+            $wpdb->insert( 
+                $wpdb->prefix . 'elearn_organisation', 
+                [ 
+                    'organisation_id' => $org_id,
+                    'organisation_name' => $org_name,
+                    'organisation_address' => '',
+                    'organisation_phone' => $org_work_phone,
+                    'organisation_mobile' => $org_mobile,
+                    'organisation_email' => $org_email,
+                    'organisation_abn' => '',
+                    'organisation_created' => current_time( 'mysql' )
+                ], 
+                [ 
+                    '%s', 
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                ]
+            );
+            $org_id = $wpdb->insert_id;
+        }
+
+        if ($user_id) {
+            // Check if the user has the "administrator" role
+            $user = new WP_User($user_id);
+            if (in_array('administrator', $user->roles)) {
+                echo '<div class="notice notice-error"><p>Administrators cannot be added to an organisation.</p></div>';
+            } else {
+                // Update the user's organisation_id metadata
+                update_user_meta($user_id, 'organisation_id', $org_id);
+                $user->set_role('manager');
+            }
+        }
+    }
+}

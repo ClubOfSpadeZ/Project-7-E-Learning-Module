@@ -23,7 +23,7 @@ function create_license_registrations_table() {
     $table_name = $wpdb->prefix . 'license_registrations';
 
     $sql = "CREATE TABLE $table_name (
-        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        id CHAR(20) NOT NULL,
         user_id BIGINT UNSIGNED,
         first_name TEXT,
         surname TEXT,
