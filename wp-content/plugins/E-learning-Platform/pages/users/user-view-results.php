@@ -187,6 +187,8 @@ function elearn_view_results_shortcode() {
     <a href="<?php echo esc_url($dashboard_url); ?>" id="elearn-btn-back">&larr; Back to Dashboard</a><br><br>
     <div class="elearn-view-results">
         <h2>Personal completion results for <?php echo esc_html ($username->display_name);?></h2>
+        <p>Below are your module completion results, including the number of attempts, pass status, and certificate completion times.</br>
+        If you wish to view the certificates click on the time within the certificate completion column.</p>
     </div>
     <div class="elearn-results-table-container">
         <table class="elearn-results-table">
@@ -232,6 +234,7 @@ function elearn_view_results_shortcode() {
         <input type="hidden" name="action" value="export_personal_results">
         <button type="submit" class="elearn-results-btn">Download Results as CSV</button>
     </form>
+    <p>You can download your results as a CSV file for your records by clicking the button above.</p>
     <?php
 
     return ob_get_clean();
