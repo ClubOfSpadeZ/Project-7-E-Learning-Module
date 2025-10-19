@@ -383,29 +383,23 @@ function elearn_manager_dash_shortcode()
                             <td><?php echo $code->access_used ? esc_html($code->access_used) : '0'; ?></td>
                             <td>
                                 <?php
-                                // Prepare mailto link
+                                // Prepare mailto link                              
+                                $message = "Dear <User>\r\n\r\n";
+                                $message .= "We at {$org_name} use the Fitness Frontline Resource Licensing System.\r\n\r\n";
+                                $message .= "The Fitness Frontline Resource Licensing System has:\r\n";
+                                $message .= "▪ Free and regular access to a range of health, fitness and wellbeing books\r\n";
+                                $message .= "▪ Some books are accompanied by a simple self-paced learning module\r\n\r\n";
+                                $message .= "To Set up the Account:\r\n";
+                                $message .= "Step 1. Register for a User Account using organisation credentials:\r\n";
+                                $message .= "https://workhealthandfitnessrecord.com.au/register/\r\n\r\n";
+                                $message .= "Step 2. Link your user account to your organisation for full access to the resources:\r\n";
+                                $message .= "https://workhealthandfitnessrecord.com.au/user-register/\r\n\r\n";
+                                $message .= "Enter the Access code: {$code->access_code}\r\n\r\n";
+                                $message .= "Please feel free to reach out if you have questions about the process.\r\n\r\n";
+                                $message .= "Regards\r\n<Insert Signature>";
+
                                 $subject = urlencode("Register for Fitness Frontline E-Learning Platform");
-                                $body = urlencode("Dear <User>
-
-We at {$org_name} use the Fitness Frontline Resource Licensing System.
-
-The Fitness Frontline Resource Licensing System has:
-▪ Free and regular access to a range of health, fitness and wellbeing books
-▪ Some books are accompanied by a simple self-paced learning module
-
-To Set up the Account:
-Step 1. Register for a User Account using organisation credentials:
-https://workhealthandfitnessrecord.com.au/register/
-
-Step 2. Link your user account to your organisation for full access to the resources:
-https://workhealthandfitnessrecord.com.au/user-register/
-
-Enter the Access code: {$code->access_code}
-
-Please feel free to reach out if you have questions about the process.
-
-Regards
-<Insert Signature>");
+                                $body = rawurlencode($message);
                                 $mailto = 'mailto:?subject=' . $subject . '&body=' . $body;
                                 ?>
                                 <a href="<?php echo esc_attr($mailto); ?>"
