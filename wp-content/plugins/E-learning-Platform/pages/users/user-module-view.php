@@ -1,11 +1,8 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/**
- * Create "Module View" page on activation
- */
 function elearn_create_module_view_page() {
-    if ( ! get_page_by_path( 'module-view' ) ) {
+    if ( ! get_page_by_path('module-view') ) {
         wp_insert_post( [
             'post_title'   => 'Module View',
             'post_name'    => 'module-view',
@@ -15,7 +12,7 @@ function elearn_create_module_view_page() {
         ] );
     }
 }
-register_activation_hook( __FILE__, 'elearn_create_module_view_page' );
+register_activation_hook(__FILE__, 'elearn_create_module_view_page' );
 add_action( 'init', 'elearn_create_module_view_page' );
 
 add_filter('the_title', function ($title, $id) {
@@ -25,9 +22,6 @@ add_filter('the_title', function ($title, $id) {
     return $title;
 }, 10, 2);
 
-/**
- * Shortcode: [module_view]
- */
 function elearn_module_view_shortcode() {
     $dashboard_page = get_page_by_path('module-dash');
     $dashboard_url  = $dashboard_page ? get_permalink($dashboard_page->ID) : home_url('/');
@@ -45,6 +39,7 @@ function elearn_module_view_shortcode() {
     $choice_tbl      = $wpdb->prefix . 'elearn_choice';
 
     $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_tbl WHERE module_id = %d", $module_id));
+    
     //display content only for logged-in users with specific roles unless it is the Demo Module
     if (!is_user_logged_in()) {
         return '<p>Please log in to access modules.</p>
