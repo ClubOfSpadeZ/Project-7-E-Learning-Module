@@ -175,7 +175,10 @@ function elearn_module_view_shortcode() {
     <div class="elearn-module-view">
         <h2><?php echo esc_html($module->module_name); ?></h2>
         <p><?php echo esc_html($module->module_description); ?></p>
-        <p><strong>User:</strong> <?php echo esc_html(wp_get_current_user()->display_name); ?></p>
+        <p>
+            <strong>User:</strong> <?php echo esc_html(wp_get_current_user()->display_name); ?></br>
+            After reading the text, move your cursor off the book and scroll down to view the quiz.
+        </p>
         <iframe src="<?php echo esc_url($module->module_pdf_path); ?>">This is where the learning content will be displayed</iframe>
     </div>
 

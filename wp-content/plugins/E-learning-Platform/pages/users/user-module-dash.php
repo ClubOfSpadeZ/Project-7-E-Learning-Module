@@ -175,11 +175,12 @@ function elearn_module_dash_shortcode() {
     } else { ?>
         <div class="elearn-dashboard">
             <h2>Welcome to Your E-Learning Dashboard</h2>
-            <a href="<?php echo esc_url($view_url); ?>" id="view-results-btn">📊 View Your Results</a>
+            <a href="<?php echo esc_url($view_url); ?>" id="view-results-btn">📊 Click here to View Results</a>
         </div>
 
         <div class="elearn-modules">
-            <h2>Available Modules</h2>
+            <h2>Available Modules</h2></br>
+            <p>Click on the image of any module to start learning:</p>
             <?php
             global $wpdb;
             $table_name = $wpdb->prefix . 'elearn_module';

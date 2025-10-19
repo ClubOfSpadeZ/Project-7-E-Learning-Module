@@ -19,6 +19,167 @@ add_action('init', 'elearn_manager_dash');
 function elearn_manager_dash_shortcode()
 {
     ob_start();
+    ?>
+    <style>
+        .manager-dashboard {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            color: #333;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        /* Headings & Text */
+        .manager-dashboard h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 20px;
+        }
+        .manager-dashboard h2, .manager-dashboard h4 {
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .manager-dashboard p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+
+        /* Table Styling */
+        .manager-dashboard table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .manager-dashboard th, 
+        .manager-dashboard td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .manager-dashboard thead {
+            background: #666;
+            color: #fff;
+            position: sticky;
+            top: 0;
+        }
+        .manager-dashboard tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .manager-dashboard tbody tr:hover {
+            background: #eef6fb;
+        }
+
+        /* Buttons */
+        .manager-dashboard button,
+        .manager-dashboard .button,
+        .manager-dashboard input[type="submit"],
+        .manager-dashboard #apply-button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .manager-dashboard button:hover,
+        .manager-dashboard .button:hover,
+        .manager-dashboard input[type="submit"]:hover,
+        .manager-dashboard #apply-button:hover {
+            background: #2c80b4;
+            transform: translateY(-1px);
+        }
+        .manager-dashboard .button-secondary {
+            background: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .manager-dashboard .button-secondary:hover {
+            background: #ddd;
+        }
+
+        /* Forms and Inputs */
+        .manager-dashboard input[type="text"],
+        .manager-dashboard select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+        }
+
+        /* Scrollable Lists */
+        #users-list-wrapper, #modules-list-wrapper {
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px;
+            background: #fafafa;
+        }
+        .user-item, .module-item {
+            display: block;
+            margin-bottom: 5px;
+            padding: 3px 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .user-item:hover, .module-item:hover {
+            background: #f0f8ff;
+        }
+
+        /* Layout Grid */
+        .manager-dashboard > div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .manager-dashboard > div > div {
+            flex: 1;
+            min-width: 320px;
+        }
+
+        /* Table Container */
+        .module-user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .module-user-table th, .module-user-table td {
+            border: 1px solid #999;
+            padding: 6px;
+        }
+        .module-user-table th {
+            background: #666;
+            color: #fff;
+        }
+        .module-user-table td a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .module-user-table td a:hover {
+            text-decoration: underline;
+        }
+
+        /* CSV Button */
+        #export-csv-form button {
+            width: 100%;
+            background: #3498db;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 15px;
+        }
+    </style>
+
+    <?php
 
     if (!is_user_logged_in()) {
         return '<p>You must be logged in to access this page.</p>';
@@ -91,13 +252,15 @@ function elearn_manager_dash_shortcode()
     }
 
     ?>
-
+    
     <div class="manager-dashboard">
 
         <h1>Manager Dashboard</h1>
-        <p>Welcome, <?php echo esc_html($current_user->display_name); ?>!</p>
-        <p><strong> <?php echo esc_html($org_name ? $org_name : $manager_org_id); ?></strong> </p>
-        <p><strong>Organisation ID:</strong> <?php echo esc_html($manager_org_id); ?></p>
+        <p>Welcome, <?php echo esc_html($current_user->display_name); ?>! </br>
+        Here you can access organisation details, supply new staff an acces code and view organisation-wide module completion.</p>
+            <h4>Organisation Details:</h4>
+        <p><b>Name:</b> <?php echo esc_html($org_name ? $org_name : $manager_org_id); ?></p>
+        <p><b>Organisation ID:</b> <?php echo esc_html($manager_org_id); ?></p>
 
 
         <ul>
@@ -201,8 +364,8 @@ function elearn_manager_dash_shortcode()
         );
         ?>
 
-        <h2>Access Code</h2>
-
+        <h4>Access Code</h4>
+        <p>The access code below can be eamiled to your staff to register new users within your organisation.</p>
         <?php if (!empty($access_codes)): ?>
             <table class="widefat fixed" cellspacing="0">
                 <thead>
@@ -348,7 +511,7 @@ Regards
 
                 <!-- Apply Button -->
                 <div id="apply-form-wrapper" style="margin-top:6px;">
-                    <button type="button" id="apply-button" style="width:100%;">Apply</button>
+                    <button type="button" id="apply-button" style="width:100%;">Apply Selected User and Module Filters</button>
                 </div>
 
             </div>
@@ -356,6 +519,7 @@ Regards
             <!-- Right: Users × Modules Table -->
             <div style="flex:2; min-width:400px;">
                 <h2>Users and Progress</h2>
+                <p>User and module filters selected on the left.</p>
                 <div style="overflow-x:auto;  max-height: 700px;">
                     <table class="module-user-table"
                         style="border:2px solid black; border-collapse:collapse; width:100%; text-align:center;">
@@ -379,7 +543,6 @@ Regards
                     <button type="submit" style="width:100%;">Download CSV</button>
                 </form>
             </div>
-
         </div>
     </div>
 
