@@ -63,7 +63,7 @@ if (is_user_logged_in()) {
         $args = array(
             'search'         => '*' . $email_domain . '*', // Search by email domain
             'search_columns' => array('user_email'),
-            'role__in'       => array('subscriber', 'manager', 'editor', 'author', 'administrator'), // Filter by roles
+            'role__in'       => array('subscriber', 'manager', 'editor', 'author', 'administrator', 'student'), // Filter by roles
         );
         $users = get_users($args);
 

@@ -173,8 +173,8 @@ function elearn_cert_shortcode() {
         </div>
         <div class="footer">
             <div class="signature">
-                Miller Health
-                <hr><i>Instructor:</i></div>
+                Fitness Frontline
+                <hr><i>Provider:</i></div>
             <div class="signature">
                 <?php echo $organisation_name; ?>
                 <hr><i>Organisation:</i></div>

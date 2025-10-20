@@ -33,6 +33,13 @@ function elearn_view_results_shortcode() {
     $attempt_tbl = $wpdb->prefix . 'elearn_attempt';
     $cert_tbl = $wpdb->prefix . 'elearn_certificate';
     
+    $user_roles   = (array) $username->roles;
+    if (!is_user_logged_in()) {
+        return '<p>Please log in to access your results.</p>';
+    } elseif (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
+        return '<p>You do not have permission to access this page.</p>';
+    } 
+
     $results = $wpdb->get_results($wpdb->prepare(
         "SELECT m.module_id, m.module_name, a.attempt_id, c.certificate_id, c.certificate_completion
         FROM $module_tbl m
@@ -42,12 +49,7 @@ function elearn_view_results_shortcode() {
         $user_id
     ));
 
-    $user_roles   = (array) $username->roles;
-    if (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles)) {
-        return '<p>You do not have permission to access this page.</p>';
-    } elseif (!is_user_logged_in()) {
-        return '<p>Please log in to access your dashboard.</p>';
-    }
+    
     
     ob_start();        
     //Display all modules with number of attempts, passed or not, most recent certificate completion time
@@ -56,6 +58,7 @@ function elearn_view_results_shortcode() {
         $modules_data = [];
 
         foreach ($results as $row) {
+            if ($row->module_name === "Demo Module") continue;
             $mod_id   = $row->module_id;
             $mod_name = $row->module_name;
             
@@ -94,7 +97,6 @@ function elearn_view_results_shortcode() {
     // Now echo table once with final data
     ?>
     <style>
-        /* Container around the table for scroll */
         .elearn-results-table-container {
             max-height: 400px;
             overflow-y: auto;
@@ -104,7 +106,6 @@ function elearn_view_results_shortcode() {
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Base table */
         .elearn-results-table {
             width: 100%;
             border-collapse: collapse;
@@ -112,32 +113,28 @@ function elearn_view_results_shortcode() {
             color: #333;
         }
 
-        /* Sticky header */
         .elearn-results-table thead {
             position: sticky;
             top: 0;
-            background: #666666; /* dark grey header */
+            background: #666666; 
             color: #fff;
             font-weight: 600;
             z-index: 2;
         }
 
-        /* Header & cell spacing with vertical + horizontal lines */
         .elearn-results-table th,
         .elearn-results-table td {
             padding: 10px 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd; /* horizontal lines */
-            border-right: 1px solid #ddd;  /* vertical lines */
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd; 
         }
 
-        /* Remove right border from last column */
         .elearn-results-table th:last-child,
         .elearn-results-table td:last-child {
             border-right: none;
         }
 
-        /* Column widths stay aligned */
         .elearn-results-table thead tr,
         .elearn-results-table tbody tr {
             display: table;
@@ -145,7 +142,6 @@ function elearn_view_results_shortcode() {
             table-layout: fixed;
         }
 
-        /* Row striping & hover */
         .elearn-results-table tbody tr:nth-child(even) {
             background: #f9f9f9;
         }
@@ -153,7 +149,6 @@ function elearn_view_results_shortcode() {
             background: #eef6fb;
         }
 
-        /* Back to Dashboard link */
         #elearn-btn-back {
         display: inline-block;
             padding: 12px 24px;
@@ -171,7 +166,6 @@ function elearn_view_results_shortcode() {
             transform: translateY(-2px);    
         }
 
-        /* CSV button */
         .elearn-results-btn {
             display: inline-block;
             margin-top: 15px;
@@ -193,6 +187,8 @@ function elearn_view_results_shortcode() {
     <a href="<?php echo esc_url($dashboard_url); ?>" id="elearn-btn-back">&larr; Back to Dashboard</a><br><br>
     <div class="elearn-view-results">
         <h2>Personal completion results for <?php echo esc_html ($username->display_name);?></h2>
+        <p>Below are your module completion results, including the number of attempts, pass status, and certificate completion times.</br>
+        If you wish to view the certificates click on the time within the certificate completion column.</p>
     </div>
     <div class="elearn-results-table-container">
         <table class="elearn-results-table">
@@ -238,8 +234,9 @@ function elearn_view_results_shortcode() {
         <input type="hidden" name="action" value="export_personal_results">
         <button type="submit" class="elearn-results-btn">Download Results as CSV</button>
     </form>
+    <p>You can download your results as a CSV file for your records by clicking the button above.</p>
     <?php
 
     return ob_get_clean();
 }
-add_shortcode('view-results', 'elearn_view_results_shortcode');
+add_shortcode('view_results', 'elearn_view_results_shortcode');

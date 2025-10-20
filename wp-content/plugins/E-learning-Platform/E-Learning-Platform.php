@@ -4,11 +4,11 @@
  * Plugin URI:  https://example.com/my-custom-plugin
  * Description: A starter template for building WordPress plugins.
  * Version:     1.0.1
- * Author:      Group 7 UC Capstone Project
+ * Author:      Group 7 - UC Capstone Project 2025
  * Author URI:  https://github.com/ClubOfSpadeZ/Project-7-E-Learning-Module
  * License:     GPL2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: E-Learing-Platform
+ * Text Domain: E-Learning-Platform
  * Domain Path: /languages
  */
 
@@ -150,25 +150,39 @@ function elearn_quiz_check() {
     }
 
     $score = 0;
-    foreach ($answers as $qid => $ans) {
-        if (!isset($correct_answers[$qid])) {
-            continue; // No correct answer recorded
+    $incorrect = [];
+
+    foreach ($correct_answers as $qid => $correct_value) {
+        if (!isset($answers[$qid]) || $answers[$qid] === '') {
+            // User didn’t answer
+            $incorrect[] = $qid;
+            continue;
         }
-        if (is_array($correct_answers[$qid])) {
-            // Multiple choice (user picks ONE, but DB may allow many correct)
-            if (in_array(intval($ans), $correct_answers[$qid], true)) {
+
+        $ans = $answers[$qid];
+
+        if (is_array($correct_value)) {
+            if (in_array(intval($ans), $correct_value, true)) {
                 $score++;
+            } else {
+                $incorrect[] = $qid;
             }
         } else {
-            // Short answer
-            if (is_string($ans) && strtolower(trim($ans)) === $correct_answers[$qid]) {
+            if (is_string($ans) && strtolower(trim($ans)) === $correct_value) {
                 $score++;
-            } elseif (is_numeric($ans) && intval($ans) === intval($correct_answers[$qid])) {
+            } elseif (is_numeric($ans) && intval($ans) === intval($correct_value)) {
                 $score++;
+            } else {
+                $incorrect[] = $qid;
             }
         }
     }
-    wp_send_json_success(['score' => $score, 'total' => count($correct_answers)]);
+
+    wp_send_json_success([
+        'score' => $score,
+        'total' => count($correct_answers),
+        'incorrect' => $incorrect
+    ]);
 }
 
 // Enqueue script
@@ -247,16 +261,37 @@ function elearn_handle_export_user_progress() {
     $modules = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_module ORDER BY module_name ASC");
 
     // Fetch attempts
-    $attempts = $wpdb->get_results("SELECT user_id, module_module_id, attempt_time FROM {$wpdb->prefix}elearn_attempt");
+    $attempts = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_attempt");
 
-    $attempt_lookup = [];
-    foreach ($attempts as $attempt) {
-        $attempt_lookup[$attempt->user_id][$attempt->module_module_id] = $attempt->attempt_time;
+    // Fetch certificates
+    $certs = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}elearn_certificate");
+
+    // Build certificate lookup table
+    $cert_lookup = [];
+    $cert_view_page = get_page_by_path('cert-view');
+    $cert_view_url = $cert_view_page ? get_permalink($cert_view_page->ID) : '#';
+
+    foreach ($certs as $cert) {
+        foreach ($attempts as $attempt) {
+            if ($attempt->attempt_id == $cert->attempt_id) {
+                $uid = $attempt->user_id;
+                $mid = $attempt->module_module_id;
+
+                $cert_lookup[$uid][$mid] = [
+                    'completed' => $cert->certificate_completion,
+                    'url' => add_query_arg([
+                        'module_id' => intval($mid),
+                        'cert_id' => intval($cert->certificate_id),
+                        'user_id' => intval($uid)
+                    ], $cert_view_url)
+                ];
+            }
+        }
     }
 
     // Send CSV headers
     header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="user_progress_' . date('Y-m-d') . '.csv"');
+    header('Content-Disposition: attachment; filename="user_certificates_' . date('Y-m-d') . '.csv"');
 
     $fp = fopen('php://output', 'w');
 
@@ -267,12 +302,17 @@ function elearn_handle_export_user_progress() {
     }
     fputcsv($fp, $header);
 
-    // Data rows
+    // Data rows (Certificate completion dates)
     foreach ($users as $user) {
         $row = [$user->display_name];
         foreach ($modules as $module) {
-            if (isset($attempt_lookup[$user->ID][$module->module_id])) {
-                $dt = new DateTime($attempt_lookup[$user->ID][$module->module_id]);
+            if (
+                isset($cert_lookup[$user->ID][$module->module_id]) &&
+                !empty($cert_lookup[$user->ID][$module->module_id]['completed']) &&
+                $cert_lookup[$user->ID][$module->module_id]['completed'] !== '0000-00-00 00:00:00'
+            ) {
+                $certData = $cert_lookup[$user->ID][$module->module_id];
+                $dt = new DateTime($certData['completed']);
                 $row[] = $dt->format('d/m/Y h:i A');
             } else {
                 $row[] = 'Not Completed';
@@ -284,6 +324,7 @@ function elearn_handle_export_user_progress() {
     fclose($fp);
     exit;
 }
+
 
 // CSV export handler
 function elearn_export_personal_results() {
@@ -389,4 +430,75 @@ function elearn_verify_access_code()
     }
 
     wp_die();
+}
+
+// Define a global function to retrieve user progress
+if ( ! function_exists( 'elearn_licence_payment_success' ) ) {
+    function elearn_licence_payment_success( $row_id = null ) {
+
+        error_log('Licence payment success function initiated for row_id: ' . $row_id);
+
+        global $wpdb;
+
+        $userstable = $wpdb->prefix . 'users';
+        $licencetable = $wpdb->prefix . 'license_registrations';
+
+        // get user_id from row id
+        $user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_name = $wpdb->get_var( $wpdb->prepare( "SELECT organisation FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_work_phone = $wpdb->get_var( $wpdb->prepare( "SELECT work_phone FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_email = $wpdb->get_var( $wpdb->prepare( "SELECT email FROM $licencetable WHERE id = %s", $row_id ) );
+        $org_mobile = $wpdb->get_var( $wpdb->prepare( "SELECT mobile FROM $licencetable WHERE id = %s", $row_id ) );
+
+        error_log('Licence payment success function called for org_id: ' . $row_id);
+
+        // Create organisation if it doesn't exist
+        if ( !empty( $row_id ) ) {
+            $wpdb->insert( 
+                $wpdb->prefix . 'elearn_organisation', 
+                [ 
+                    'organisation_id' => $row_id,
+                    'organisation_name' => $org_name,
+                    'organisation_address' => '',
+                    'organisation_phone' => $org_work_phone,
+                    'organisation_mobile' => $org_mobile,
+                    'organisation_email' => $org_email,
+                    'organisation_abn' => '',
+                    'organisation_created' => current_time( 'mysql' )
+                ], 
+                [ 
+                    '%s', 
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                    '%s',
+                ]
+            );
+            $org_id = $wpdb->insert_id;
+        } else {
+            error_log('No organisation ID found for row_id: ' . $row_id);
+        }
+        
+
+        if ($user_id) {
+            // Check if the user has the "administrator" role
+            $user = new WP_User($user_id);
+            if (in_array('administrator', $user->roles)) {
+                echo '<div class="notice notice-error"><p>Administrators cannot be added to an organisation.</p></div>';
+            } else {
+                // check if organisation_id metadata exists
+                $existing_org_id = get_user_meta($user_id, 'organisation_id', true);
+                if ($existing_org_id && $existing_org_id != 0) {
+                    // If it exists, error to user
+                    echo '<div class="notice notice-error"><p>User is already a member of an organisation.</p></div>';
+                } else {
+                    add_user_meta($user_id, 'organisation_id', $row_id);
+                    $user->set_role('manager');
+                }
+            }
+        }
+    }
 }

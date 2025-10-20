@@ -1,11 +1,8 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/**
- * Create "Module View" page on activation
- */
 function elearn_create_module_view_page() {
-    if ( ! get_page_by_path( 'module-view' ) ) {
+    if ( ! get_page_by_path('module-view') ) {
         wp_insert_post( [
             'post_title'   => 'Module View',
             'post_name'    => 'module-view',
@@ -15,7 +12,7 @@ function elearn_create_module_view_page() {
         ] );
     }
 }
-register_activation_hook( __FILE__, 'elearn_create_module_view_page' );
+register_activation_hook(__FILE__, 'elearn_create_module_view_page' );
 add_action( 'init', 'elearn_create_module_view_page' );
 
 add_filter('the_title', function ($title, $id) {
@@ -25,9 +22,6 @@ add_filter('the_title', function ($title, $id) {
     return $title;
 }, 10, 2);
 
-/**
- * Shortcode: [module_view]
- */
 function elearn_module_view_shortcode() {
     $dashboard_page = get_page_by_path('module-dash');
     $dashboard_url  = $dashboard_page ? get_permalink($dashboard_page->ID) : home_url('/');
@@ -45,10 +39,11 @@ function elearn_module_view_shortcode() {
     $choice_tbl      = $wpdb->prefix . 'elearn_choice';
 
     $module = $wpdb->get_row($wpdb->prepare("SELECT * FROM $module_tbl WHERE module_id = %d", $module_id));
+    
     //display content only for logged-in users with specific roles unless it is the Demo Module
     if (!is_user_logged_in()) {
         return '<p>Please log in to access modules.</p>
-                <a href="https://healthfitlearning.wp.local/login">&larr; Login</a>';                
+            <a href="' . esc_url(home_url('/login')) . '">&larr; Login</a>';
     } elseif (!in_array('student', $user_roles) && !in_array('manager', $user_roles) && !in_array('administrator', $user_roles) && $module->module_name !== 'Demo Module') {
         return '<p>You do not have permission to access this page.</p>
                 <a href="' . esc_url($dashboard_url) . '">&larr; Back to Dashboard</a>';
@@ -180,7 +175,10 @@ function elearn_module_view_shortcode() {
     <div class="elearn-module-view">
         <h2><?php echo esc_html($module->module_name); ?></h2>
         <p><?php echo esc_html($module->module_description); ?></p>
-        <p><strong>User:</strong> <?php echo esc_html(wp_get_current_user()->display_name); ?></p>
+        <p>
+            <strong>User:</strong> <?php echo esc_html(wp_get_current_user()->display_name); ?></br>
+            After reading the text, move your cursor off the book and scroll down to view the quiz.
+        </p>
         <iframe src="<?php echo esc_url($module->module_pdf_path); ?>">This is where the learning content will be displayed</iframe>
     </div>
 
@@ -239,9 +237,27 @@ function elearn_module_view_shortcode() {
                 const score = response.data.score;
                 const total = response.data.total;
                 if (score === total) {
-                    $('#quizResult').removeClass('fail').addClass('pass').html(`🎉 Congratulations! You passed with ${score}/${total}.`);
+                    $('#quizResult')
+                        .removeClass('fail')
+                        .addClass('pass')
+                        .html(`🎉 Congratulations! You passed with ${score}/${total}.`);
                 } else {
-                    $('#quizResult').removeClass('pass').addClass('fail').html(`You scored ${score}/${total}. Please try again — 100% required to pass.`);
+                    let resultMessage = `You scored ${score}/${total}. Please try again — 100% required to pass.`;
+
+                    if (response.data.incorrect && response.data.incorrect.length > 0) {
+                        const incorrectNums = [];
+                        $('.elearn-question').each(function(index) {
+                            if (response.data.incorrect.includes($(this).data('qid'))) {
+                                incorrectNums.push(index + 1);
+                            }
+                        });
+                        resultMessage += `<br><br><strong>Incorrect Answers:</strong> ${incorrectNums.map(n => 'Question ' + n).join(', ')}`;
+                    }
+
+                    $('#quizResult')
+                        .removeClass('pass')
+                        .addClass('fail')
+                        .html(resultMessage);
                 }
                 // Log attempt if not the demo module
                 if ('<?php echo esc_js($module->module_name); ?>' !== 'Demo Module') {

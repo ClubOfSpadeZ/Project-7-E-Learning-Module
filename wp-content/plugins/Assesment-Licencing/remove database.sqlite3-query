@@ -1,0 +1,7 @@
+-- database: ../../database/.ht.sqlite
+
+DROP TABLE IF EXISTS wprt_license_registrations;
+DELETE FROM _wp_sqlite_mysql_information_schema_columns WHERE TABLE_NAME = 'wprt_license_registrations';
+DELETE FROM _wp_sqlite_mysql_information_schema_tables WHERE TABLE_NAME = 'wprt_license_registrations';
+DELETE FROM _wp_sqlite_mysql_information_schema_statistics WHERE TABLE_NAME = 'wprt_license_registrations';
+DELETE FROM _wp_sqlite_mysql_information_schema_table_constraints WHERE TABLE_NAME = 'wprt_license_registrations';
