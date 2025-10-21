@@ -272,7 +272,7 @@ function elearn_manager_dash_shortcode()
         <?php
         //generate access Code for organisation
     
-        $organisation_id = isset($_GET['organisation_id']) ? sanitize_text_field($_GET['organisation_id']) : '';
+        $organisation_id = $manager_org_id;
 
         // Access Code Management
         $access_code_count = $wpdb->get_var(
